@@ -30,7 +30,9 @@
             color: var(--text-main);
             padding: 30px 15px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .form-container {
@@ -253,6 +255,18 @@
             color: var(--danger);
             border: 1px solid #fca5a5;
         }
+
+        /* تذييل الصفحة */
+        .site-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+            width: 100%;
+            max-width: 820px;
+        }
     </style>
 </head>
 <body>
@@ -270,10 +284,11 @@
 
             <img src="SCHOOL_LOGO_URL" alt="شعار المدرسة" class="header-logo" onerror="this.src='2.jpg'">
         </div>
-<div class="instructions-box">
+        
+        <div class="instructions-box">
             <h4>إرشادات وتعليمات ملء الاستمارة:</h4>
             <ul>
-                <li>يرجى نقل وملء جميع البيانات بدقة تامة مطابقة لما هو مثبت في البطاقة الوطنية الموحدة الخاصة بالطالب.</li>
+                <li>يرجى نقل وملء جميع البيانات بدقة تامة مطابقة لما هو مثبت في البطاقة الوطنية الموحدة الخاصة بالط الطالب.</li>
                 <li>تأكد من كتابة الأسماء الثلاثية أو الرباعية وأرقام الهواتف بشكل صحيح وخالٍ من أي مسافات زائدة أو رموز قبل الإرسال.</li>
                 <li>يمنع منعاً باتاً تكرار تقديم الاستمارة لنفس الطالب، حيث سيكشف النظام التكرار تلقائياً ويقوم بإلغاء الطلب.</li>
                 <li>تأكد من اختيار الصف الدراسي والشعبة بدقة لضمان تسجيل البيانات في سجل المدرسة الصحيح.</li>
@@ -466,6 +481,11 @@
 
         <div id="statusMsg" class="status-msg"></div>
     </div>
+
+    <!-- تذييل الصفحة (الحقوق وبرمجة الموقع) -->
+    <footer class="site-footer">
+        تصميم وبرمجة: <strong>محمود أحمد</strong> | للتواصل: 07734894407
+    </footer>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
