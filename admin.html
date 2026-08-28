@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - متوسطة الجوادين للبنين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- مكتبة تصدير Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -16,6 +18,7 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --danger: #ef4444;
+            --success: #16a34a;
         }
 
         * {
@@ -175,6 +178,35 @@
             margin-top: 3px;
         }
 
+        /* كروت الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .stat-card h4 {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .stat-card .number {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
         .controls {
             background: var(--card-bg);
             padding: 15px;
@@ -184,10 +216,12 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .search-input {
-            width: 100%;
+            flex: 2;
+            min-width: 200px;
             height: 42px;
             padding: 0 12px;
             border: 1px solid var(--border);
@@ -206,6 +240,26 @@
             font-size: 13px;
             outline: none;
             background: #fff;
+        }
+
+        .btn-export {
+            background: var(--success);
+            color: white;
+            border: none;
+            height: 42px;
+            padding: 0 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-export:hover {
+            background: #15803d;
         }
 
         .table-container {
@@ -334,6 +388,27 @@
 
         .modal-header h3 { font-size: 16px; }
 
+        .modal-header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-print {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .btn-print:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
         .close-btn {
             background: transparent;
             border: none;
@@ -385,9 +460,13 @@
             font-weight: 700;
         }
 
-        @media (max-width: 500px) {
-            .modal-body { grid-template-columns: 1fr; }
-            .info-group.full-width, .section-divider { grid-column: span 1; }
+        /* تنسيقات الطباعة */
+        @media print {
+            body * { visibility: hidden; }
+            #detailsModal, #detailsModal * { visibility: visible; }
+            #detailsModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: none; padding: 0; }
+            .modal-card { max-width: 100%; box-shadow: none; border: none; }
+            .close-btn, .btn-print { display: none; }
         }
     </style>
 </head>
@@ -419,6 +498,26 @@
             <img src="2.jpg" alt="شعار المدرسة" class="header-logo" style="border-radius: 50%;">
         </header>
 
+        <!-- كروت الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>إجمالي الطلاب المسجلين</h4>
+                <div class="number" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>الأول متوسط</h4>
+                <div class="number" id="statGrade1">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>الثاني متوسط</h4>
+                <div class="number" id="statGrade2">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>الثالث متوسط</h4>
+                <div class="number" id="statGrade3">0</div>
+            </div>
+        </div>
+
         <div class="controls">
             <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحد..." oninput="filterData()">
             
@@ -438,6 +537,8 @@
                 <option value="هـ">هـ</option>
                 <option value="و">و</option>
             </select>
+
+            <button class="btn-export" onclick="exportToExcel()">تصدير إلى Excel 📊</button>
         </div>
 
         <div class="table-container">
@@ -464,7 +565,10 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3>استمارة بيانات الطالب الكاملة</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <div class="modal-header-actions">
+                    <button class="btn-print" onclick="window.print()">طباعة 🖨️</button>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
             </div>
             <div class="modal-body" id="modalContent"></div>
         </div>
@@ -499,6 +603,7 @@
         const database = firebase.database();
 
         let allStudents = [];
+        let currentFilteredStudents = [];
 
         function loadFirebaseData() {
             database.ref('students').on('value', snapshot => {
@@ -510,8 +615,16 @@
                         allStudents.push({ id, ...data[id] });
                     }
                 }
-                renderTable(allStudents);
+                updateStats(allStudents);
+                filterData();
             });
+        }
+
+        function updateStats(data) {
+            document.getElementById('statTotal').innerText = data.length;
+            document.getElementById('statGrade1').innerText = data.filter(s => s.grade === 'الأول متوسط').length;
+            document.getElementById('statGrade2').innerText = data.filter(s => s.grade === 'الثاني متوسط').length;
+            document.getElementById('statGrade3').innerText = data.filter(s => s.grade === 'الثالث متوسط').length;
         }
 
         function renderTable(data) {
@@ -544,24 +657,11 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
-            // فحص شامل لمسمى أقرب نقطة دالة
-            const landmarkValue = student.nearestPoint || 
-                                 student.nearestLandmark || 
-                                 student.landmark || 
-                                 student.nearPoint || 
-                                 (student.address && (student.address.nearestPoint || student.address.nearestLandmark || student.address.landmark)) || 
-                                 '-';
-
-            // فحص شامل لمسمى المستوى الاقتصادي
-            const ecoValue = student.economicLevel || 
-                             student.economicStatus || 
-                             student.economic || 
-                             student.economy || 
-                             '-';
+            const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
+            const ecoValue = student.economicLevel || student.economicStatus || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
-                <!-- 1. البيانات الشخصية -->
                 <div class="section-divider">البيانات الشخصية</div>
                 <div class="info-group">
                     <div class="info-label">اسم الطالب الرباعي واللقب</div>
@@ -580,7 +680,6 @@
                     <div class="info-value">${student.gender || 'ذكر'}</div>
                 </div>
 
-                <!-- 2. معلومات البطاقة الموحدة والجنسية -->
                 <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
                 <div class="info-group">
                     <div class="info-label">رقم البطاقة الموحدة</div>
@@ -603,10 +702,9 @@
                     <div class="info-value">${student.religion || 'مسلم'}</div>
                 </div>
 
-                <!-- 3. الحالة الاجتماعية والصحية -->
                 <div class="section-divider">الحالة الاجتماعية والصحية</div>
                 <div class="info-group">
-                    <div class="info-label">هل الطالب من ذوي الاحتياجات الخاصة؟</div>
+                    <div class="info-label">ذوو الاحتياجات الخاصة</div>
                     <div class="info-value">${student.specialNeeds || 'كلا'}</div>
                 </div>
                 <div class="info-group">
@@ -618,11 +716,10 @@
                     <div class="info-value">${ecoValue}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">هل مشمول بمنحة الرعاية الاجتماعية؟</div>
+                    <div class="info-label">منحة الرعاية الاجتماعية</div>
                     <div class="info-value">${student.socialCare || 'كلا'}</div>
                 </div>
 
-                <!-- 4. الصف الدراسي وعنوان السكن -->
                 <div class="section-divider">الصف الدراسي وعنوان السكن</div>
                 <div class="info-group">
                     <div class="info-label">الصف الدراسي الحالي</div>
@@ -666,7 +763,7 @@
             const selectedGrade = document.getElementById('filterGrade').value;
             const selectedSection = document.getElementById('filterSection').value;
 
-            const filtered = allStudents.filter(s => {
+            currentFilteredStudents = allStudents.filter(s => {
                 const matchesSearch = (s.fullName && s.fullName.toLowerCase().includes(search)) ||
                                       (s.motherName && s.motherName.toLowerCase().includes(search)) ||
                                       (s.nationalId && s.nationalId.includes(search));
@@ -677,7 +774,42 @@
                 return matchesSearch && matchesGrade && matchesSection;
             });
 
-            renderTable(filtered);
+            renderTable(currentFilteredStudents);
+        }
+
+        function exportToExcel() {
+            if (currentFilteredStudents.length === 0) {
+                alert('لا توجد بيانات لتصديرها!');
+                return;
+            }
+
+            const exportData = currentFilteredStudents.map((s, index) => ({
+                "ت": index + 1,
+                "اسم الطالب الرباعي": s.fullName || '-',
+                "اسم الأم الثلاثي": s.motherName || '-',
+                "تاريخ التولد": s.birthDate || '-',
+                "الصف": s.grade || '-',
+                "الشعبة": s.section || '-',
+                "رقم البطاقة الموحدة": s.nationalId || '-',
+                "تاريخ إصدار البطاقة": s.issueDate || '-',
+                "المحافظة / مسقط الرأس": s.birthPlace || '-',
+                "فصيلة الدم": s.bloodType || '-',
+                "الديانة": s.religion || '-',
+                "احتياجات خاصة": s.specialNeeds || 'كلا',
+                "لغة الدراسة": s.studyLanguage || 'العربية',
+                "المستوى الاقتصادي": s.economicLevel || s.economicStatus || '-',
+                "رعاية اجتماعية": s.socialCare || 'كلا',
+                "المحلة": s.address?.mahalla || s.mahalla || '-',
+                "الزقاق": s.address?.zuqaq || s.zuqaq || '-',
+                "الدار": s.address?.dar || s.dar || '-',
+                "أقرب نقطة دالة": s.nearestPoint || s.nearestLandmark || '-',
+                "رقم ولي الأمر": s.parentPhone || '-'
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
+            XLSX.writeFile(workbook, "سجل_بيانات_الطلاب_متوسطة_الجوادين.xlsx");
         }
 
         function deleteStudent(id, name) {
