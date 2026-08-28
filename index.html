@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة تسجيل بيانات الطالب - مدرسة الجوادين</title>
+    <title>استمارة تسجيل بيانات الطالب - مدرسة الجوادين للبنين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-muted: #475569;
             --border: #cbd5e1;
-            --success: #10b981;
-            --danger: #ef4444;
+            --danger: #dc2626;
+            --success: #15803d;
         }
 
         * {
@@ -28,7 +28,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            padding: 20px 10px;
+            padding: 30px 15px;
             display: flex;
             justify-content: center;
         }
@@ -36,88 +36,128 @@
         .form-container {
             background-color: var(--card-bg);
             width: 100%;
-            max-width: 750px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            padding: 30px 25px;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 35px 30px;
             border: 1px solid #e2e8f0;
         }
 
         .form-header {
             text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px dashed #e2e8f0;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1e3a8a;
+            padding-bottom: 15px;
         }
 
         .form-header h2 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
             color: var(--primary);
+            margin-bottom: 6px;
         }
 
         .form-header p {
             font-size: 14px;
             color: var(--text-muted);
-            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* صندوق الإرشادات الرسمية */
+        .instructions-box {
+            background-color: #f1f5f9;
+            border-right: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+        }
+
+        .instructions-box h4 {
+            font-size: 15px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .instructions-box ul {
+            list-style-type: square;
+            padding-right: 20px;
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.8;
         }
 
         .section-title {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary);
-            margin: 20px 0 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin: 25px 0 15px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .grid-2 {
+        /* ترتيب الشبكة بشكل منتظم ومتناسق */
+        .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
+            margin-bottom: 15px;
         }
 
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
+        @media (max-width: 650px) {
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
         }
 
         .form-group {
-            margin-bottom: 15px;
-            text-align: right;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group label {
-            display: block;
             font-weight: 700;
             font-size: 13.5px;
             margin-bottom: 6px;
-            color: #334155;
+            color: #1e293b;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px 14px;
+            height: 42px;
+            padding: 8px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             outline: none;
-            transition: all 0.3s;
+            transition: border-color 0.2s;
             background-color: #fff;
+            color: var(--text-main);
+        }
+
+        /* تعديل اتجاه وتنسيق حقول التاريخ */
+        input[type="date"].form-control {
+            direction: rtl;
+            text-align: right;
         }
 
         .form-control:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
         }
 
         .radio-group {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
-            padding-top: 5px;
+            height: 42px;
         }
 
         .radio-label {
@@ -126,7 +166,7 @@
             gap: 6px;
             font-size: 14px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .radio-label input {
@@ -137,30 +177,26 @@
 
         .submit-btn {
             width: 100%;
-            padding: 14px;
+            height: 48px;
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 800;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-            margin-top: 20px;
+            transition: background 0.2s;
+            margin-top: 25px;
         }
 
         .submit-btn:hover {
             background-color: var(--primary-hover);
         }
 
-        .submit-btn:active {
-            transform: scale(0.99);
-        }
-
         .status-msg {
             display: none;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
             font-weight: 700;
             margin-top: 20px;
@@ -168,14 +204,14 @@
         }
 
         .status-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            background-color: #dcfce7;
+            color: var(--success);
+            border: 1px solid #bbf7d0;
         }
 
         .status-error {
             background-color: #fee2e2;
-            color: #991b1b;
+            color: var(--danger);
             border: 1px solid #fca5a5;
         }
     </style>
@@ -185,28 +221,38 @@
     <div class="form-container">
         <div class="form-header">
             <h2>استمارة تسجيل بيانات الطالب الإلكترونية</h2>
-            <p>يرجى ملء جميع الحقول بدقة عالية. التقديم المكرر مغلق تلقائياً.</p>
+            <p>الموقع الرسمي - متوسطة الجوادين للبنين</p>
+        </div>
+
+        <!-- تعليمات وإرشادات التسجيل الرسمي -->
+        <div class="instructions-box">
+            <h4>إرشادات وتعليمات ملء الاستمارة:</h4>
+            <ul>
+                <li>يرجى نقل و ملء جميع البيانات بدقة من واقع البطاقة الموحدة الخاصة بالطالب.</li>
+                <li>تأكد من كتابة أرقام الهواتف بشكل صحيح باللغات المعتمدة دون رموز.</li>
+                <li>يمنع تكرار تقديم الاستمارة، حيث إن النظام يكتشف التكرار تلقائياً ويغلق الطلب.</li>
+            </ul>
         </div>
 
         <form id="studentRegistrationForm" onsubmit="handleRegistration(event)">
             
             <!-- البيانات الشخصية -->
-            <div class="section-title">👤 البيانات الشخصية</div>
-            <div class="grid-2">
+            <div class="section-title">البيانات الشخصية</div>
+            <div class="form-row">
                 <div class="form-group">
-                    <label>الاسم الرباعي للطالب *</label>
+                    <label for="fullName">الاسم الرباعي للطالب *</label>
                     <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً" required>
                 </div>
                 <div class="form-group">
-                    <label>اسم الأم الثلاثي *</label>
+                    <label for="motherName">اسم الأم الثلاثي *</label>
                     <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي" required>
                 </div>
             </div>
 
-            <div class="grid-2">
+            <div class="form-row">
                 <div class="form-group">
-                    <label>تاريخ التولد *</label>
-                    <input type="date" id="birthDate" class="form-control" required>
+                    <label for="birthDate">تاريخ التولد *</label>
+                    <input type="date" id="birthDate" class="form-control" dir="rtl" required>
                 </div>
                 <div class="form-group">
                     <label>الجنس *</label>
@@ -217,28 +263,28 @@
                 </div>
             </div>
 
-            <!-- معلومات الهوية -->
-            <div class="section-title">🪪 معلومات البطاقة الموحدة والجنسية</div>
-            <div class="grid-2">
+            <!-- معلومات البطاقة الموحدة -->
+            <div class="section-title">معلومات البطاقة الموحدة والجنسية</div>
+            <div class="form-row">
                 <div class="form-group">
-                    <label>رقم البطاقة الموحدة *</label>
-                    <input type="text" id="nationalId" class="form-control" placeholder="أدخل رقم البطاقة الموحدة" required>
+                    <label for="nationalId">رقم البطاقة الموحدة *</label>
+                    <input type="text" id="nationalId" class="form-control" placeholder="أدخل الأرقام فقط" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                 </div>
                 <div class="form-group">
-                    <label>تاريخ إصدار الموحدة *</label>
-                    <input type="date" id="issueDate" class="form-control" required>
+                    <label for="issueDate">تاريخ إصدار البطاقة الموحدة *</label>
+                    <input type="date" id="issueDate" class="form-control" dir="rtl" required>
                 </div>
             </div>
 
-            <div class="grid-3">
+            <div class="form-row-3">
                 <div class="form-group">
-                    <label>مسقط الرأس *</label>
+                    <label for="birthPlace">مسقط الرأس *</label>
                     <input type="text" id="birthPlace" class="form-control" placeholder="المحافظة / المدينة" required>
                 </div>
                 <div class="form-group">
-                    <label>فصيلة الدم *</label>
+                    <label for="bloodType">فصيلة الدم *</label>
                     <select id="bloodType" class="form-control" required>
-                        <option value="">اختر...</option>
+                        <option value="">اختر الفصيلة...</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
                         <option value="B+">B+</option>
@@ -250,7 +296,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>الديانة *</label>
+                    <label for="religion">الديانة *</label>
                     <select id="religion" class="form-control" required>
                         <option value="مسلم">مسلم</option>
                         <option value="مسيحي">مسيحي</option>
@@ -262,8 +308,8 @@
             </div>
 
             <!-- الحالة الاجتماعية والصحية -->
-            <div class="section-title">📋 الحالة الاجتماعية والصحية</div>
-            <div class="grid-2">
+            <div class="section-title">الحالة الاجتماعية والصحية</div>
+            <div class="form-row">
                 <div class="form-group">
                     <label>هل الطالب من ذوي الاحتياجات الخاصة؟ *</label>
                     <div class="radio-group">
@@ -272,7 +318,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>لغة الدراسة *</label>
+                    <label for="studyLanguage">لغة الدراسة *</label>
                     <select id="studyLanguage" class="form-control" required>
                         <option value="العربية">العربية</option>
                         <option value="الإنكليزية">الإنكليزية</option>
@@ -281,9 +327,9 @@
                 </div>
             </div>
 
-            <div class="grid-2">
+            <div class="form-row">
                 <div class="form-group">
-                    <label>المستوى الاقتصادي *</label>
+                    <label for="economicLevel">المستوى الاقتصادي *</label>
                     <select id="economicLevel" class="form-control" required>
                         <option value="">اختر المستوى...</option>
                         <option value="تحت خط الفقر">تحت خط الفقر</option>
@@ -301,11 +347,11 @@
                 </div>
             </div>
 
-            <!-- الدراسية والسكن -->
-            <div class="section-title">🏫 الصف الدراسي وعنوان السكن</div>
-            <div class="grid-2">
+            <!-- الدراسة والسكن -->
+            <div class="section-title">الصف الدراسي وعنوان السكن</div>
+            <div class="form-row">
                 <div class="form-group">
-                    <label>الصف الدراسي الحالي *</label>
+                    <label for="grade">الصف الدراسي الحالي *</label>
                     <select id="grade" class="form-control" required>
                         <option value="">اختر الصف...</option>
                         <option value="الأول متوسط">الأول متوسط</option>
@@ -314,7 +360,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>الشعبة *</label>
+                    <label for="section">الشعبة *</label>
                     <select id="section" class="form-control" required>
                         <option value="">اختر الشعبة...</option>
                         <option value="أ">أ</option>
@@ -327,27 +373,28 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>عنوان السكن *</label>
-                <div class="grid-3">
-                    <input type="text" id="mahalla" class="form-control" placeholder="م/ (محلة)" required>
-                    <input type="text" id="zuqaq" class="form-control" placeholder="ز/ (زقاق)" required>
-                    <input type="text" id="dar" class="form-control" placeholder="د/ (دار)" required>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>عنوان السكن (محلة / زقاق / دار) *</label>
+                <div class="form-row-3">
+                    <input type="text" id="mahalla" class="form-control" placeholder="محلة (م/)" required>
+                    <input type="text" id="zuqaq" class="form-control" placeholder="زقاق (ز/)" required>
+                    <input type="text" id="dar" class="form-control" placeholder="دار (د/)" required>
                 </div>
             </div>
 
-            <div class="grid-2">
+            <div class="form-row">
                 <div class="form-group">
-                    <label>أقرب نقطة دالة *</label>
+                    <label for="nearestPoint">أقرب نقطة دالة *</label>
                     <input type="text" id="nearestPoint" class="form-control" placeholder="مثال: قرب جامع..." required>
                 </div>
                 <div class="form-group">
-                    <label>رقم هاتف ولي الأمر *</label>
-                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" required>
+                    <label for="parentPhone">رقم هاتف ولي الأمر *</label>
+                    <!-- تقييد الإدخال بالأرقام فقط -->
+                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" required>
                 </div>
             </div>
 
-            <button type="submit" id="btnSubmit" class="submit-btn">إرسال واستكمال التسجيل</button>
+            <button type="submit" id="btnSubmit" class="submit-btn">إرسال وتأكيد البيانات</button>
         </form>
 
         <div id="statusMsg" class="status-msg"></div>
@@ -370,7 +417,6 @@
             const btnSubmit = document.getElementById('btnSubmit');
             const statusMsg = document.getElementById('statusMsg');
 
-            // سحب البيانات من الواجهة
             const fullName = document.getElementById('fullName').value.trim();
             const motherName = document.getElementById('motherName').value.trim();
             const birthDate = document.getElementById('birthDate').value;
@@ -395,7 +441,6 @@
             btnSubmit.disabled = true;
             btnSubmit.innerText = "جاري التحقق وإرسال البيانات...";
 
-            // فحص منع التكرار بناءً على الاسم الرباعي أو رقم الموحدة
             database.ref('students').once('value').then(snapshot => {
                 const students = snapshot.val();
                 let isDuplicate = false;
@@ -411,12 +456,11 @@
 
                 if (isDuplicate) {
                     statusMsg.className = "status-msg status-error";
-                    statusMsg.innerText = "عذراً! هذا الطالب مسجل سابقاً في قاعدة البيانات. لا يمكن إعادة التسجيل مرة أخرى.";
+                    statusMsg.innerText = "عذراً، هذا الطالب مسجل سابقاً في قاعدة البيانات. يرجى عدم الإرسال مرة أخرى.";
                     statusMsg.style.display = "block";
                     btnSubmit.disabled = false;
-                    btnSubmit.innerText = "إرسال واستكمال التسجيل";
+                    btnSubmit.innerText = "إرسال وتأكيد البيانات";
                 } else {
-                    // حفظ البيانات الجديدة في قاعدة البيانات
                     const newStudentRef = database.ref('students').push();
                     newStudentRef.set({
                         fullName,
@@ -439,15 +483,15 @@
                         parentPhone,
                         createdAt: new Date().toISOString()
                     }).then(() => {
-                        // إخفاء الاستمارة وإظهار الرسالة المطلوبة فقط
                         document.getElementById('studentRegistrationForm').style.display = "none";
+                        document.querySelector('.instructions-box').style.display = "none";
                         statusMsg.className = "status-msg status-success";
                         statusMsg.innerText = "تم تسجيل المعلومات بنجاح، يرجى عدم الإرسال مرة أخرى.";
                         statusMsg.style.display = "block";
                     }).catch(err => {
                         alert("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
                         btnSubmit.disabled = false;
-                        btnSubmit.innerText = "إرسال واستكمال التسجيل";
+                        btnSubmit.innerText = "إرسال وتأكيد البيانات";
                     });
                 }
             });
