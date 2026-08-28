@@ -164,7 +164,7 @@
             border-radius: 6px;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
             background-color: #fff;
             color: var(--text-main);
         }
@@ -172,6 +172,21 @@
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
+        }
+
+        /* تنسيق الحدود عند وجود خطأ بالحقل */
+        .form-control.input-invalid {
+            border-color: var(--danger) !important;
+            background-color: #fff5f5;
+        }
+
+        /* نصوص رسائل الخطأ أسفل كل حقل */
+        .field-error {
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 5px;
+            display: none;
         }
 
         .date-select-group {
@@ -245,7 +260,7 @@
 <body>
 
     <div class="form-container">
-        <!-- الترويسة الرسمية بالشعارين -->
+        <!-- الترويسة الرسمية -->
         <div class="form-header">
             <img src="شعار_وزارة_التربية_العراقية.svg" alt="شعار وزارة التربية" class="header-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Iraq.svg/250px-Coat_of_arms_of_Iraq.svg.png'">
             
@@ -267,18 +282,20 @@
             </ul>
         </div>
 
-        <form id="studentRegistrationForm" onsubmit="handleRegistration(event)">
+        <form id="studentRegistrationForm" onsubmit="handleRegistration(event)" novalidate>
             
             <!-- البيانات الشخصية -->
             <div class="section-title">البيانات الشخصية</div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="fullName">الاسم الرباعي للطالب *</label>
-                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً" required>
+                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً">
+                    <span id="err-fullName" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="motherName">اسم الأم الثلاثي *</label>
-                    <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي" required>
+                    <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي">
+                    <span id="err-motherName" class="field-error"></span>
                 </div>
             </div>
 
@@ -286,10 +303,11 @@
                 <div class="form-group">
                     <label>تاريخ التولد *</label>
                     <div class="date-select-group">
-                        <select id="birthDay" class="form-control" required><option value="">اليوم</option></select>
-                        <select id="birthMonth" class="form-control" required><option value="">الشهر</option></select>
-                        <select id="birthYear" class="form-control" required><option value="">السنة</option></select>
+                        <select id="birthDay" class="form-control"><option value="">اليوم</option></select>
+                        <select id="birthMonth" class="form-control"><option value="">الشهر</option></select>
+                        <select id="birthYear" class="form-control"><option value="">السنة</option></select>
                     </div>
+                    <span id="err-birthDate" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label>الجنس *</label>
@@ -305,26 +323,29 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="nationalId">رقم البطاقة الموحدة *</label>
-                    <input type="text" id="nationalId" class="form-control" placeholder="ادخل رقم البطاقة الموحدة صحيح كما في البطاقة" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="12" required>
+                    <input type="text" id="nationalId" class="form-control" placeholder="ادخل رقم البطاقة الموحدة صحيح كما في البطاقة" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="12">
+                    <span id="err-nationalId" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label>تاريخ إصدار البطاقة الموحدة *</label>
                     <div class="date-select-group">
-                        <select id="issueDay" class="form-control" required><option value="">اليوم</option></select>
-                        <select id="issueMonth" class="form-control" required><option value="">الشهر</option></select>
-                        <select id="issueYear" class="form-control" required><option value="">السنة</option></select>
+                        <select id="issueDay" class="form-control"><option value="">اليوم</option></select>
+                        <select id="issueMonth" class="form-control"><option value="">الشهر</option></select>
+                        <select id="issueYear" class="form-control"><option value="">السنة</option></select>
                     </div>
+                    <span id="err-issueDate" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-row-3">
                 <div class="form-group">
                     <label for="birthPlace">مسقط الرأس *</label>
-                    <input type="text" id="birthPlace" class="form-control" placeholder="المحافظة / المدينة" required>
+                    <input type="text" id="birthPlace" class="form-control" placeholder="المحافظة / المدينة">
+                    <span id="err-birthPlace" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="bloodType">فصيلة الدم *</label>
-                    <select id="bloodType" class="form-control" required>
+                    <select id="bloodType" class="form-control">
                         <option value="">اختر الفصيلة...</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
@@ -335,10 +356,11 @@
                         <option value="AB+">AB+</option>
                         <option value="AB-">AB-</option>
                     </select>
+                    <span id="err-bloodType" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="religion">الديانة *</label>
-                    <select id="religion" class="form-control" required>
+                    <select id="religion" class="form-control">
                         <option value="مسلم">مسلم</option>
                         <option value="مسيحي">مسيحي</option>
                         <option value="صابئي">صابئي</option>
@@ -360,7 +382,7 @@
                 </div>
                 <div class="form-group">
                     <label for="studyLanguage">لغة الدراسة *</label>
-                    <select id="studyLanguage" class="form-control" required>
+                    <select id="studyLanguage" class="form-control">
                         <option value="العربية">العربية</option>
                         <option value="الإنكليزية">الإنكليزية</option>
                         <option value="الكردية">الكردية</option>
@@ -371,13 +393,14 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="economicLevel">المستوى الاقتصادي *</label>
-                    <select id="economicLevel" class="form-control" required>
+                    <select id="economicLevel" class="form-control">
                         <option value="">اختر المستوى...</option>
                         <option value="تحت خط الفقر">تحت خط الفقر</option>
                         <option value="فقيرة">فقيرة</option>
                         <option value="وسطى">وسطى</option>
                         <option value="علیا">علیا</option>
                     </select>
+                    <span id="err-economicLevel" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label>هل مشمول بمنحة الرعاية الاجتماعية؟ *</label>
@@ -393,16 +416,17 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="grade">الصف الدراسي الحالي *</label>
-                    <select id="grade" class="form-control" required>
+                    <select id="grade" class="form-control">
                         <option value="">اختر الصف...</option>
                         <option value="الأول متوسط">الأول متوسط</option>
                         <option value="الثاني متوسط">الثاني متوسط</option>
                         <option value="الثالث متوسط">الثالث متوسط</option>
                     </select>
+                    <span id="err-grade" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="section">الشعبة *</label>
-                    <select id="section" class="form-control" required>
+                    <select id="section" class="form-control">
                         <option value="">اختر الشعبة...</option>
                         <option value="أ">أ</option>
                         <option value="ب">ب</option>
@@ -411,26 +435,30 @@
                         <option value="هـ">هـ</option>
                         <option value="و">و</option>
                     </select>
+                    <span id="err-section" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-group" style="margin-bottom: 15px;">
                 <label>عنوان السكن (محلة / زقاق / دار) *</label>
                 <div class="form-row-3">
-                    <input type="text" id="mahalla" class="form-control" placeholder="محلة (م/)" required>
-                    <input type="text" id="zuqaq" class="form-control" placeholder="زقاق (ز/)" required>
-                    <input type="text" id="dar" class="form-control" placeholder="دار (د/)" required>
+                    <input type="text" id="mahalla" class="form-control" placeholder="محلة (م/)">
+                    <input type="text" id="zuqaq" class="form-control" placeholder="زقاق (ز/)">
+                    <input type="text" id="dar" class="form-control" placeholder="دار (د/)">
                 </div>
+                <span id="err-address" class="field-error"></span>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="nearestPoint">أقرب نقطة دالة *</label>
-                    <input type="text" id="nearestPoint" class="form-control" placeholder="مثال: قرب جامع..." required>
+                    <input type="text" id="nearestPoint" class="form-control" placeholder="مثال: قرب جامع...">
+                    <span id="err-nearestPoint" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="parentPhone">رقم هاتف ولي الأمر *</label>
-                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" required>
+                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11">
+                    <span id="err-parentPhone" class="field-error"></span>
                 </div>
             </div>
 
@@ -448,7 +476,6 @@
         window.onload = function() {
             populateDateSelects('birthDay', 'birthMonth', 'birthYear', 2005, 2018);
             populateDateSelects('issueDay', 'issueMonth', 'issueYear', 2012, 2026);
-            setupCustomValidations();
         };
 
         function populateDateSelects(dayId, monthId, yearId, startYear, endYear) {
@@ -467,65 +494,69 @@
             }
         }
 
-        // إعداد رسائل المتصفح التلقائية بلغة واضحة بدلاً من "اطالة النص"
-        function setupCustomValidations() {
-            const fullNameInput = document.getElementById('fullName');
-            const motherNameInput = document.getElementById('motherName');
-            const nationalIdInput = document.getElementById('nationalId');
-            const parentPhoneInput = document.getElementById('parentPhone');
-
-            fullNameInput.addEventListener('input', function() {
-                this.setCustomValidity('');
-            });
-            motherNameInput.addEventListener('input', function() {
-                this.setCustomValidity('');
-            });
-            nationalIdInput.addEventListener('input', function() {
-                this.setCustomValidity('');
-            });
-            parentPhoneInput.addEventListener('input', function() {
-                this.setCustomValidity('');
-            });
-        }
-
         const firebaseConfig = {
             databaseURL: "https://aljawadindatabase-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function showError(msg) {
+        // تنظيف أخطاء السابقة
+        function clearErrors() {
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.innerText = '';
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('input-invalid');
+            });
             const statusMsg = document.getElementById('statusMsg');
-            statusMsg.className = "status-msg status-error";
-            statusMsg.innerText = msg;
-            statusMsg.style.display = "block";
-            statusMsg.scrollIntoView({ behavior: 'smooth' });
+            statusMsg.style.display = 'none';
+        }
+
+        // إظهار الخطأ تحت الحقل المعني تحديداً
+        function setFieldError(elementIds, errorSpanId, message) {
+            const errSpan = document.getElementById(errorSpanId);
+            if (errSpan) {
+                errSpan.innerText = message;
+                errSpan.style.display = 'block';
+            }
+
+            const ids = Array.isArray(elementIds) ? elementIds : [elementIds];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('input-invalid');
+            });
+
+            // التمرير التلقائي إلى أوّل حقل فيه خطأ
+            const firstElement = document.getElementById(ids[0]);
+            if (firstElement) {
+                firstElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstElement.focus();
+            }
         }
 
         function handleRegistration(event) {
             event.preventDefault();
+            clearErrors();
 
             const btnSubmit = document.getElementById('btnSubmit');
-            const statusMsg = document.getElementById('statusMsg');
-
-            statusMsg.style.display = "none";
 
             const fullName = document.getElementById('fullName').value.trim().replace(/\s+/g, ' ');
             const motherName = document.getElementById('motherName').value.trim().replace(/\s+/g, ' ');
             const nationalId = document.getElementById('nationalId').value.trim();
             const parentPhone = document.getElementById('parentPhone').value.trim();
             
-            const birthDate = `${document.getElementById('birthYear').value}-${document.getElementById('birthMonth').value}-${document.getElementById('birthDay').value}`;
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            const issueDate = `${document.getElementById('issueYear').value}-${document.getElementById('issueMonth').value}-${document.getElementById('issueDay').value}`;
+            const birthDay = document.getElementById('birthDay').value;
+            const birthMonth = document.getElementById('birthMonth').value;
+            const birthYear = document.getElementById('birthYear').value;
             
+            const issueDay = document.getElementById('issueDay').value;
+            const issueMonth = document.getElementById('issueMonth').value;
+            const issueYear = document.getElementById('issueYear').value;
+
             const birthPlace = document.getElementById('birthPlace').value.trim();
             const bloodType = document.getElementById('bloodType').value;
-            const religion = document.getElementById('religion').value;
-            const specialNeeds = document.querySelector('input[name="specialNeeds"]:checked').value;
-            const studyLanguage = document.getElementById('studyLanguage').value;
             const economicLevel = document.getElementById('economicLevel').value;
-            const socialCare = document.querySelector('input[name="socialCare"]:checked').value;
             const grade = document.getElementById('grade').value;
             const section = document.getElementById('section').value;
             const mahalla = document.getElementById('mahalla').value.trim();
@@ -535,35 +566,99 @@
 
             const arabicRegex = /^[\u0621-\u064A\s]+$/;
 
-            // 1. فحص اسم الطالب الرباعي
-            const nameWords = fullName.split(' ');
-            if (!arabicRegex.test(fullName) || nameWords.length < 4 || nameWords.some(w => w.length < 2)) {
-                showError("يرجى ادخال الاسم رباعي صحيح كما في البطاقة الموحدة.");
+            // 1. الاسم الرباعي
+            const nameWords = fullName ? fullName.split(' ') : [];
+            if (!fullName || !arabicRegex.test(fullName) || nameWords.length < 4 || nameWords.some(w => w.length < 2)) {
+                setFieldError('fullName', 'err-fullName', 'يرجى إدخال الاسم الرباعي الصحيح كاملاً كما في البطاقة.');
                 return;
             }
 
-            // 2. فحص اسم الأم الثلاثي
-            const motherWords = motherName.split(' ');
-            if (!arabicRegex.test(motherName) || motherWords.length < 3 || motherWords.some(w => w.length < 2)) {
-                showError("يرجى ادخال اسم الام الثلاثي صحيح كما في البطاقة الموحدة.");
+            // 2. اسم الأم الثلاثي
+            const motherWords = motherName ? motherName.split(' ') : [];
+            if (!motherName || !arabicRegex.test(motherName) || motherWords.length < 3 || motherWords.some(w => w.length < 2)) {
+                setFieldError('motherName', 'err-motherName', 'يرجى إدخال اسم الأم الثلاثي الصحيح كما في البطاقة.');
                 return;
             }
 
-            // 3. فحص رقم البطاقة الموحدة
-            if (nationalId.length !== 12 || !/^\d{12}$/.test(nationalId)) {
-                showError("يرجى ادخال رقم البطاقة الموحدة صحيح المكون من 12 رقماً كما في البطاقة.");
+            // 3. تاريخ التولد
+            if (!birthDay || !birthMonth || !birthYear) {
+                setFieldError(['birthDay', 'birthMonth', 'birthYear'], 'err-birthDate', 'يرجى تحديد تاريخ التولد بالكامل (اليوم والشهر والسنة).');
                 return;
             }
 
-            // 4. فحص رقم الهاتف
-            if (parentPhone.length !== 11 || !/^07[3-9]\d{8}$/.test(parentPhone)) {
-                showError("يرجى ادخال رقم هاتف ولي الأمر صحيح المكون من 11 رقماً ويبدأ بـ 07.");
+            // 4. رقم البطاقة الموحدة
+            if (!nationalId || nationalId.length !== 12 || !/^\d{12}$/.test(nationalId)) {
+                setFieldError('nationalId', 'err-nationalId', 'يرجى إدخال رقم البطاقة الموحدة الصحيح المكون من 12 رقماً.');
                 return;
             }
+
+            // 5. تاريخ إصدار البطاقة
+            if (!issueDay || !issueMonth || !issueYear) {
+                setFieldError(['issueDay', 'issueMonth', 'issueYear'], 'err-issueDate', 'يرجى تحديد تاريخ إصدار البطاقة بالكامل.');
+                return;
+            }
+
+            // 6. مسقط الرأس
+            if (!birthPlace) {
+                setFieldError('birthPlace', 'err-birthPlace', 'يرجى إدخال مسقط الرأس (المحافظة / المدينة).');
+                return;
+            }
+
+            // 7. فصيلة الدم
+            if (!bloodType) {
+                setFieldError('bloodType', 'err-bloodType', 'يرجى اختيار فصيلة الدم.');
+                return;
+            }
+
+            // 8. المستوى الاقتصادي
+            if (!economicLevel) {
+                setFieldError('economicLevel', 'err-economicLevel', 'يرجى اختيار المستوى الاقتصادي.');
+                return;
+            }
+
+            // 9. الصف الدراسي
+            if (!grade) {
+                setFieldError('grade', 'err-grade', 'يرجى اختيار الصف الدراسي الحالي.');
+                return;
+            }
+
+            // 10. الشعبة
+            if (!section) {
+                setFieldError('section', 'err-section', 'يرجى اختيار الشعبة.');
+                return;
+            }
+
+            // 11. عنوان السكن
+            if (!mahalla || !zuqaq || !dar) {
+                setFieldError(['mahalla', 'zuqaq', 'dar'], 'err-address', 'يرجى إكمال تفاصيل عنوان السكن (المحلة والزقاق والدار).');
+                return;
+            }
+
+            // 12. أقرب نقطة دالة
+            if (!nearestPoint) {
+                setFieldError('nearestPoint', 'err-nearestPoint', 'يرجى كتابة أقرب نقطة دالة.');
+                return;
+            }
+
+            // 13. رقم هاتف ولي الأمر
+            if (!parentPhone || parentPhone.length !== 11 || !/^07[3-9]\d{8}$/.test(parentPhone)) {
+                setFieldError('parentPhone', 'err-parentPhone', 'يرجى إدخال رقم هاتف صحيا مكون من 11 رقماً ويبدأ بـ 07.');
+                return;
+            }
+
+            // البيانات التكميلية
+            const birthDate = `${birthYear}-${birthMonth}-${birthDay}`;
+            const issueDate = `${issueYear}-${issueMonth}-${issueDay}`;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const religion = document.getElementById('religion').value;
+            const specialNeeds = document.querySelector('input[name="specialNeeds"]:checked').value;
+            const studyLanguage = document.getElementById('studyLanguage').value;
+            const socialCare = document.querySelector('input[name="socialCare"]:checked').value;
 
             btnSubmit.disabled = true;
             btnSubmit.innerText = "جاري التحقق وإرسال البيانات...";
 
+            // التحقق من التكرار في قاعدة البيانات
             database.ref('students').once('value').then(snapshot => {
                 const students = snapshot.val();
                 let isDuplicate = false;
@@ -578,7 +673,11 @@
                 }
 
                 if (isDuplicate) {
-                    showError("عذراً، هذا الطالب مسجل سابقاً في قاعدة البيانات. يرجى عدم الإرسال مرة أخرى.");
+                    const statusMsg = document.getElementById('statusMsg');
+                    statusMsg.className = "status-msg status-error";
+                    statusMsg.innerText = "عذراً، هذا الطالب مسجل سابقاً في قاعدة البيانات. يرجى عدم الإرسال مرة أخرى.";
+                    statusMsg.style.display = "block";
+                    statusMsg.scrollIntoView({ behavior: 'smooth' });
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = "إرسال وتأكيد البيانات";
                 } else {
@@ -606,11 +705,15 @@
                     }).then(() => {
                         document.getElementById('studentRegistrationForm').style.display = "none";
                         document.querySelector('.instructions-box').style.display = "none";
+                        const statusMsg = document.getElementById('statusMsg');
                         statusMsg.className = "status-msg status-success";
                         statusMsg.innerText = "تم تسجيل المعلومات بنجاح، يرجى عدم الإرسال مرة أخرى.";
                         statusMsg.style.display = "block";
                     }).catch(err => {
-                        showError("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
+                        const statusMsg = document.getElementById('statusMsg');
+                        statusMsg.className = "status-msg status-error";
+                        statusMsg.innerText = "حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.";
+                        statusMsg.style.display = "block";
                         btnSubmit.disabled = false;
                         btnSubmit.innerText = "إرسال وتأكيد البيانات";
                     });
