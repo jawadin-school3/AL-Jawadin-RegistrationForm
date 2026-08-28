@@ -512,7 +512,7 @@
             <p>متوسطة الجوادين للبنين</p>
             <div class="password-container">
                 <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
-                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">👁️</span>
+                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">👁</span>
             </div>
             <button onclick="checkPassword()">دخول الصفحة</button>
             <div id="errorMsg" class="error-msg">رمز المرور غير صحيح!</div>
@@ -550,7 +550,7 @@
                 <option value="و">و</option>
             </select>
 
-            <button class="btn-export" onclick="exportToExcel()">تصدير إلى Excel 📊</button>
+            <button class="btn-export" onclick="exportToExcel()">تصدير إلى Excel</button>
         </div>
 
         <div class="table-container">
@@ -578,7 +578,7 @@
             <div class="modal-header">
                 <h3>استمارة بيانات الطالب الكاملة</h3>
                 <div class="modal-header-actions">
-                    <button class="btn-print" onclick="window.print()">طباعة 🖨️</button>
+                    <button class="btn-print" onclick="window.print()">طباعة</button>
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
             </div>
@@ -598,10 +598,10 @@
             const eyeBtn = document.getElementById('eyeBtn');
             if (passInput.type === 'password') {
                 passInput.type = 'text';
-                eyeBtn.textContent = '🙈';
+                eyeBtn.textContent = 'إخفاء';
             } else {
                 passInput.type = 'password';
-                eyeBtn.textContent = '👁️';
+                eyeBtn.textContent = '👁';
             }
         }
 
