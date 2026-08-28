@@ -544,12 +544,20 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
-            const landmarkValue = student.landmark || 
+            // فحص شامل لمسمى أقرب نقطة دالة
+            const landmarkValue = student.nearestPoint || 
                                  student.nearestLandmark || 
+                                 student.landmark || 
                                  student.nearPoint || 
-                                 student.notes || 
-                                 (student.address && (student.address.landmark || student.address.nearestLandmark || student.address.notes)) || 
-                                 'لا توجد';
+                                 (student.address && (student.address.nearestPoint || student.address.nearestLandmark || student.address.landmark)) || 
+                                 '-';
+
+            // فحص شامل لمسمى المستوى الاقتصادي
+            const ecoValue = student.economicLevel || 
+                             student.economicStatus || 
+                             student.economic || 
+                             student.economy || 
+                             '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
@@ -607,7 +615,7 @@
                 </div>
                 <div class="info-group">
                     <div class="info-label">المستوى الاقتصادي</div>
-                    <div class="info-value">${student.economicStatus || '-'}</div>
+                    <div class="info-value">${ecoValue}</div>
                 </div>
                 <div class="info-group">
                     <div class="info-label">هل مشمول بمنحة الرعاية الاجتماعية؟</div>
