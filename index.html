@@ -43,7 +43,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* هيدر رسمي مع الشعارين */
         .form-header {
             display: flex;
             align-items: center;
@@ -275,11 +274,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="fullName">الاسم الرباعي للطالب *</label>
-                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً" required>
+                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً" required minlength="10">
                 </div>
                 <div class="form-group">
                     <label for="motherName">اسم الأم الثلاثي *</label>
-                    <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي" required>
+                    <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي" required minlength="7">
                 </div>
             </div>
 
@@ -306,7 +305,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="nationalId">رقم البطاقة الموحدة *</label>
-                    <input type="text" id="nationalId" class="form-control" placeholder="أدخل الأرقام فقط" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    <input type="text" id="nationalId" class="form-control" placeholder="أدخل 12 رقماً" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="12" minlength="12" required>
                 </div>
                 <div class="form-group">
                     <label>تاريخ إصدار البطاقة الموحدة *</label>
@@ -321,7 +320,7 @@
             <div class="form-row-3">
                 <div class="form-group">
                     <label for="birthPlace">مسقط الرأس *</label>
-                    <input type="text" id="birthPlace" class="form-control" placeholder="المحافظة / المدينة" required>
+                    <input type="text" id="birthPlace" class="form-control" placeholder="المحافظة / المدينة" required minlength="3">
                 </div>
                 <div class="form-group">
                     <label for="bloodType">فصيلة الدم *</label>
@@ -427,11 +426,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="nearestPoint">أقرب نقطة دالة *</label>
-                    <input type="text" id="nearestPoint" class="form-control" placeholder="مثال: قرب جامع..." required>
+                    <input type="text" id="nearestPoint" class="form-control" placeholder="مثال: قرب جامع..." required minlength="3">
                 </div>
                 <div class="form-group">
                     <label for="parentPhone">رقم هاتف ولي الأمر *</label>
-                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" required>
+                    <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" minlength="11" required>
                 </div>
             </div>
 
@@ -446,7 +445,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // تعبئة الخيارات للأيام والشهور والسنوات تلقائياً
         window.onload = function() {
             populateDateSelects('birthDay', 'birthMonth', 'birthYear', 2005, 2018);
             populateDateSelects('issueDay', 'issueMonth', 'issueYear', 2012, 2026);
@@ -474,14 +472,24 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        function showError(msg) {
+            const statusMsg = document.getElementById('statusMsg');
+            statusMsg.className = "status-msg status-error";
+            statusMsg.innerText = msg;
+            statusMsg.style.display = "block";
+            statusMsg.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function handleRegistration(event) {
             event.preventDefault();
 
             const btnSubmit = document.getElementById('btnSubmit');
             const statusMsg = document.getElementById('statusMsg');
 
-            const fullName = document.getElementById('fullName').value.trim();
-            const motherName = document.getElementById('motherName').value.trim();
+            statusMsg.style.display = "none";
+
+            const fullName = document.getElementById('fullName').value.trim().replace(/\s+/g, ' ');
+            const motherName = document.getElementById('motherName').value.trim().replace(/\s+/g, ' ');
             
             const birthDate = `${document.getElementById('birthYear').value}-${document.getElementById('birthMonth').value}-${document.getElementById('birthDay').value}`;
             const gender = document.querySelector('input[name="gender"]:checked').value;
@@ -503,6 +511,44 @@
             const nearestPoint = document.getElementById('nearestPoint').value.trim();
             const parentPhone = document.getElementById('parentPhone').value.trim();
 
+            // --- فحص صحة البيانات الذكي (Validation Checks) --- //
+
+            // 1. فحص الاسم الرباعي (يجب أن يتكون من 4 كلمات على الأقل وكل كلمة لا تقل عن حرفين)
+            const nameWords = fullName.split(' ');
+            const arabicRegex = /^[\u0621-\u064A\s]+$/;
+
+            if (!arabicRegex.test(fullName)) {
+                showError("يرجى كتابة اسم الطالب باللغة العربية فقط وبدون أرقام أو رموز.");
+                return;
+            }
+            if (nameWords.length < 4 || nameWords.some(w => w.length < 2)) {
+                showError("يرجى كتابة الاسم الرباعي للطالب كاملاً وبشكل صحيح (4 كلمات على الأقل).");
+                return;
+            }
+
+            // 2. فحص اسم الأم الثلاثي (3 كلمات على الأقل)
+            const motherWords = motherName.split(' ');
+            if (!arabicRegex.test(motherName)) {
+                showError("يرجى كتابة اسم الأم باللغة العربية فقط وبدون أرقام أو رموز.");
+                return;
+            }
+            if (motherWords.length < 3 || motherWords.some(w => w.length < 2)) {
+                showError("يرجى كتابة اسم الأم الثلاثي كاملاً وبشكل صحيح (3 كلمات على الأقل).");
+                return;
+            }
+
+            // 3. فحص رقم البطاقة الموحدة (يجب أن يكون 12 رقماً بالضبط)
+            if (nationalId.length !== 12 || !/^\d{12}$/.test(nationalId)) {
+                showError("رقم البطاقة الموحدة غير صحيح، يجب أن يتكون من 12 رقماً بالضبط.");
+                return;
+            }
+
+            // 4. فحص رقم هاتف ولي الأمر (11 رقم ويبدأ بـ 07)
+            if (parentPhone.length !== 11 || !/^07[3-9]\d{8}$/.test(parentPhone)) {
+                showError("رقم الهاتف غير صحيح. يجب أن يتكون من 11 رقماً ويبدأ بـ 07 (مثال: 0770XXXXXXX).");
+                return;
+            }
+
             btnSubmit.disabled = true;
             btnSubmit.innerText = "جاري التحقق وإرسال البيانات...";
 
@@ -520,9 +566,7 @@
                 }
 
                 if (isDuplicate) {
-                    statusMsg.className = "status-msg status-error";
-                    statusMsg.innerText = "عذراً، هذا الطالب مسجل سابقاً في قاعدة البيانات. يرجى عدم الإرسال مرة أخرى.";
-                    statusMsg.style.display = "block";
+                    showError("عذراً، هذا الطالب مسجل سابقاً في قاعدة البيانات. يرجى عدم الإرسال مرة أخرى.");
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = "إرسال وتأكيد البيانات";
                 } else {
@@ -554,7 +598,7 @@
                         statusMsg.innerText = "تم تسجيل المعلومات بنجاح، يرجى عدم الإرسال مرة أخرى.";
                         statusMsg.style.display = "block";
                     }).catch(err => {
-                        alert("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
+                        showError("حدث خطأ أثناء حفظ البيانات، يرجى المحاولة مرة أخرى.");
                         btnSubmit.disabled = false;
                         btnSubmit.innerText = "إرسال وتأكيد البيانات";
                     });
