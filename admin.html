@@ -576,6 +576,14 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
+            // التأكد من جلب قيمة "أقرب نقطة دالة" بجميع المسميات الممكنة في الفايربيس
+            const landmarkValue = student.landmark || 
+                                 student.nearestLandmark || 
+                                 student.nearPoint || 
+                                 student.notes || 
+                                 (student.address && (student.address.landmark || student.address.nearestLandmark || student.address.notes)) || 
+                                 'لا توجد';
+
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
                 <div class="info-group full-width">
@@ -611,24 +619,20 @@
                     <div class="info-value">${student.parentPhone || '-'}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">هاتف الطالب</div>
-                    <div class="info-value">${student.studentPhone || 'لا يوجد'}</div>
-                </div>
-                <div class="info-group">
                     <div class="info-label">المحلة</div>
-                    <div class="info-value">${student.address?.mahalla || '-'}</div>
+                    <div class="info-value">${student.address?.mahalla || student.mahalla || '-'}</div>
                 </div>
                 <div class="info-group">
                     <div class="info-label">الزقاق</div>
-                    <div class="info-value">${student.address?.zuqaq || '-'}</div>
+                    <div class="info-value">${student.address?.zuqaq || student.zuqaq || '-'}</div>
                 </div>
                 <div class="info-group">
                     <div class="info-label">الدار</div>
-                    <div class="info-value">${student.address?.dar || '-'}</div>
+                    <div class="info-value">${student.address?.dar || student.dar || '-'}</div>
                 </div>
                 <div class="info-group full-width">
-                    <div class="info-label">أقرب نقطة دالة / ملاحظات</div>
-                    <div class="info-value">${student.notes || student.landmark || 'لا توجد'}</div>
+                    <div class="info-label">أقرب نقطة دالة</div>
+                    <div class="info-value">${landmarkValue}</div>
                 </div>
             `;
 
