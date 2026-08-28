@@ -91,10 +91,15 @@
             margin-bottom: 20px;
         }
 
-        .login-card input {
+        .password-container {
+            position: relative;
             width: 100%;
-            padding: 12px;
             margin-bottom: 15px;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
             border: 2px solid var(--border);
             border-radius: 10px;
             text-align: center;
@@ -103,8 +108,19 @@
             transition: 0.3s;
         }
 
-        .login-card input:focus {
+        .password-container input:focus {
             border-color: var(--primary);
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            user-select: none;
         }
 
         .login-card button {
@@ -389,28 +405,28 @@
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 8px;
         }
 
         .section-divider {
             grid-column: span 2;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--primary);
             border-bottom: 2px solid var(--border);
-            padding-bottom: 4px;
-            margin-top: 10px;
+            padding-bottom: 2px;
+            margin-top: 6px;
             margin-bottom: 2px;
         }
 
         .info-group {
             background: #f8fafc;
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: 1px solid var(--border);
         }
 
@@ -419,22 +435,23 @@
         }
 
         .info-label {
-            font-size: 11px;
+            font-size: 10.5px;
             color: var(--text-muted);
             font-weight: 700;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .info-value {
-            font-size: 13.5px;
+            font-size: 12.5px;
             color: var(--text-main);
             font-weight: 700;
         }
 
-        /* تنسيقات الطباعة النقية */
+        /* تنسيقات الطباعة النقية في ورقة واحدة A4 */
         @media print {
             @page {
-                margin: 10mm;
+                size: A4 portrait;
+                margin: 5mm;
             }
             body {
                 background: #fff !important;
@@ -465,8 +482,18 @@
             .modal-body {
                 overflow: visible !important;
                 max-height: none !important;
+                padding: 5px !important;
+                gap: 4px !important;
             }
-            .close-btn, .btn-print {
+            .section-divider {
+                margin-top: 4px !important;
+                margin-bottom: 1px !important;
+                font-size: 11px !important;
+            }
+            .info-group {
+                padding: 4px 8px !important;
+            }
+            .close-btn, .btn-print, .modal-header {
                 display: none !important;
             }
         }
@@ -483,7 +510,10 @@
             </div>
             <h2>لوحة التحكم الإدارية</h2>
             <p>متوسطة الجوادين للبنين</p>
-            <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
+            <div class="password-container">
+                <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
+                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">👁️</span>
+            </div>
             <button onclick="checkPassword()">دخول الصفحة</button>
             <div id="errorMsg" class="error-msg">رمز المرور غير صحيح!</div>
         </div>
@@ -562,6 +592,18 @@
 
     <script>
         const SECRET_PASS = "jawadin2026";
+
+        function togglePassword() {
+            const passInput = document.getElementById('passInput');
+            const eyeBtn = document.getElementById('eyeBtn');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeBtn.textContent = '🙈';
+            } else {
+                passInput.type = 'password';
+                eyeBtn.textContent = '👁️';
+            }
+        }
 
         function checkPassword() {
             const input = document.getElementById('passInput').value;
@@ -782,7 +824,6 @@
 
             const worksheet = XLSX.utils.json_to_sheet(exportData);
 
-            // ضبط عرض الأعمدة تلقائياً لمنع التداخل والقطع
             const colWidths = Object.keys(exportData[0]).map(key => {
                 let maxLen = key.toString().length;
                 exportData.forEach(row => {
