@@ -428,10 +428,18 @@
             padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .info-group.full-width {
             grid-column: span 2;
+        }
+
+        .info-content {
+            flex-grow: 1;
+            overflow: hidden;
         }
 
         .info-label {
@@ -445,9 +453,29 @@
             font-size: 12.5px;
             color: var(--text-main);
             font-weight: 700;
+            word-break: break-all;
         }
 
-        /* تنسيقات الطباعة النقية في ورقة واحدة A4 */
+        .btn-copy {
+            background: #e2e8f0;
+            color: var(--primary-dark);
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-right: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* تنسيقات الطباعة النقية في ورقة واحدة A4 وإخفاء أزرار النسخ عند الطباعة */
         @media print {
             @page {
                 size: A4 portrait;
@@ -493,7 +521,7 @@
             .info-group {
                 padding: 4px 8px !important;
             }
-            .close-btn, .btn-print, .modal-header {
+            .btn-copy, .close-btn, .btn-print, .modal-header {
                 display: none !important;
             }
         }
@@ -512,7 +540,7 @@
             <p>متوسطة الجوادين للبنين</p>
             <div class="password-container">
                 <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
-                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">👁</span>
+                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">عرض</span>
             </div>
             <button onclick="checkPassword()">دخول الصفحة</button>
             <div id="errorMsg" class="error-msg">رمز المرور غير صحيح!</div>
@@ -601,7 +629,7 @@
                 eyeBtn.textContent = 'إخفاء';
             } else {
                 passInput.type = 'password';
-                eyeBtn.textContent = '👁';
+                eyeBtn.textContent = 'عرض';
             }
         }
 
@@ -618,6 +646,26 @@
 
         function handleKeyPress(e) {
             if (e.key === 'Enter') checkPassword();
+        }
+
+        function copyToClipboard(text, btnElement) {
+            if (!text || text === '-') {
+                alert('لا توجد بيانات للنسخ');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btnElement.textContent;
+                btnElement.textContent = 'تم النسخ';
+                btnElement.style.background = '#16a34a';
+                btnElement.style.color = '#fff';
+                setTimeout(() => {
+                    btnElement.textContent = originalText;
+                    btnElement.style.background = '';
+                    btnElement.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('فشل النسخ', err);
+            });
         }
 
         const firebaseConfig = {
@@ -669,6 +717,20 @@
             });
         }
 
+        function createInfoGroup(label, value, isFullWidth = false) {
+            const safeValue = value || '-';
+            const fullClass = isFullWidth ? 'full-width' : '';
+            return `
+                <div class="info-group ${fullClass}">
+                    <div class="info-content">
+                        <div class="info-label">${label}</div>
+                        <div class="info-value">${safeValue}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${safeValue.toString().replace(/'/g, "\\'")}', this)">نسخ</button>
+                </div>
+            `;
+        }
+
         function openDetails(id) {
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
@@ -679,92 +741,32 @@
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
                 <div class="section-divider">البيانات الشخصية</div>
-                <div class="info-group">
-                    <div class="info-label">اسم الطالب الرباعي واللقب</div>
-                    <div class="info-value">${student.fullName || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">اسم الأم الثلاثي</div>
-                    <div class="info-value">${student.motherName || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">تاريخ التولد</div>
-                    <div class="info-value">${student.birthDate || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">الجنس</div>
-                    <div class="info-value">${student.gender || 'ذكر'}</div>
-                </div>
+                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
+                ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
+                ${createInfoGroup('تاريخ التولد', student.birthDate)}
+                ${createInfoGroup('الجنس', student.gender || 'ذكر')}
 
                 <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
-                <div class="info-group">
-                    <div class="info-label">رقم البطاقة الموحدة</div>
-                    <div class="info-value">${student.nationalId || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">تاريخ إصدار البطاقة الموحدة</div>
-                    <div class="info-value">${student.issueDate || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">مسقط الراس</div>
-                    <div class="info-value">${student.birthPlace || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">فصيلة الدم</div>
-                    <div class="info-value">${student.bloodType || 'غير محدد'}</div>
-                </div>
-                <div class="info-group full-width">
-                    <div class="info-label">الديانة</div>
-                    <div class="info-value">${student.religion || 'مسلم'}</div>
-                </div>
+                ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId)}
+                ${createInfoGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
+                ${createInfoGroup('مسقط الراس', student.birthPlace)}
+                ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
+                ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
 
                 <div class="section-divider">الحالة الاجتماعية والصحية</div>
-                <div class="info-group">
-                    <div class="info-label">ذوو الاحتياجات الخاصة</div>
-                    <div class="info-value">${student.specialNeeds || 'كلا'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">لغة الدراسة</div>
-                    <div class="info-value">${student.studyLanguage || 'العربية'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">المستوى الاقتصادي</div>
-                    <div class="info-value">${ecoValue}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">منحة الرعاية الاجتماعية</div>
-                    <div class="info-value">${student.socialCare || 'كلا'}</div>
-                </div>
+                ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
+                ${createInfoGroup('لغة الدراسة', student.studyLanguage || 'العربية')}
+                ${createInfoGroup('المستوى الاقتصادي', ecoValue)}
+                ${createInfoGroup('منحة الرعاية الاجتماعية', student.socialCare || 'كلا')}
 
                 <div class="section-divider">الصف الدراسي وعنوان السكن</div>
-                <div class="info-group">
-                    <div class="info-label">الصف الدراسي الحالي</div>
-                    <div class="info-value">${student.grade || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">الشعبة</div>
-                    <div class="info-value">${student.section || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">المحلة (م)</div>
-                    <div class="info-value">${student.address?.mahalla || student.mahalla || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">الزقاق (ز)</div>
-                    <div class="info-value">${student.address?.zuqaq || student.zuqaq || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">الدار (د)</div>
-                    <div class="info-value">${student.address?.dar || student.dar || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">أقرب نقطة دالة</div>
-                    <div class="info-value">${landmarkValue}</div>
-                </div>
-                <div class="info-group full-width">
-                    <div class="info-label">رقم هاتف ولي الأمر</div>
-                    <div class="info-value">${student.parentPhone || '-'}</div>
-                </div>
+                ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
+                ${createInfoGroup('الشعبة', student.section)}
+                ${createInfoGroup('المحلة (م)', student.address?.mahalla || student.mahalla)}
+                ${createInfoGroup('الزقاق (ز)', student.address?.zuqaq || student.zuqaq)}
+                ${createInfoGroup('الدار (د)', student.address?.dar || student.dar)}
+                ${createInfoGroup('أقرب نقطة دالة', landmarkValue)}
+                ${createInfoGroup('رقم هاتف ولي الأمر', student.parentPhone, true)}
             `;
 
             document.getElementById('detailsModal').style.display = 'flex';
