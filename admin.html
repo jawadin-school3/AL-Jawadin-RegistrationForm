@@ -178,35 +178,6 @@
             margin-top: 3px;
         }
 
-        /* كروت الإحصائيات */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-
-        .stat-card h4 {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        .stat-card .number {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
         .controls {
             background: var(--card-bg);
             padding: 15px;
@@ -460,13 +431,44 @@
             font-weight: 700;
         }
 
-        /* تنسيقات الطباعة */
+        /* تنسيقات الطباعة النقية */
         @media print {
-            body * { visibility: hidden; }
-            #detailsModal, #detailsModal * { visibility: visible; }
-            #detailsModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: none; padding: 0; }
-            .modal-card { max-width: 100%; box-shadow: none; border: none; }
-            .close-btn, .btn-print { display: none; }
+            @page {
+                margin: 10mm;
+            }
+            body {
+                background: #fff !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #detailsModal, #detailsModal * {
+                visibility: visible;
+            }
+            #detailsModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                background: transparent !important;
+                padding: 0;
+                display: block !important;
+            }
+            .modal-card {
+                max-width: 100% !important;
+                max-height: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                overflow: visible !important;
+            }
+            .modal-body {
+                overflow: visible !important;
+                max-height: none !important;
+            }
+            .close-btn, .btn-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -497,26 +499,6 @@
             </div>
             <img src="2.jpg" alt="شعار المدرسة" class="header-logo" style="border-radius: 50%;">
         </header>
-
-        <!-- كروت الإحصائيات -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>إجمالي الطلاب المسجلين</h4>
-                <div class="number" id="statTotal">0</div>
-            </div>
-            <div class="stat-card">
-                <h4>الأول متوسط</h4>
-                <div class="number" id="statGrade1">0</div>
-            </div>
-            <div class="stat-card">
-                <h4>الثاني متوسط</h4>
-                <div class="number" id="statGrade2">0</div>
-            </div>
-            <div class="stat-card">
-                <h4>الثالث متوسط</h4>
-                <div class="number" id="statGrade3">0</div>
-            </div>
-        </div>
 
         <div class="controls">
             <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحد..." oninput="filterData()">
@@ -615,16 +597,8 @@
                         allStudents.push({ id, ...data[id] });
                     }
                 }
-                updateStats(allStudents);
                 filterData();
             });
-        }
-
-        function updateStats(data) {
-            document.getElementById('statTotal').innerText = data.length;
-            document.getElementById('statGrade1').innerText = data.filter(s => s.grade === 'الأول متوسط').length;
-            document.getElementById('statGrade2').innerText = data.filter(s => s.grade === 'الثاني متوسط').length;
-            document.getElementById('statGrade3').innerText = data.filter(s => s.grade === 'الثالث متوسط').length;
         }
 
         function renderTable(data) {
@@ -807,6 +781,18 @@
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+            // ضبط عرض الأعمدة تلقائياً لمنع التداخل والقطع
+            const colWidths = Object.keys(exportData[0]).map(key => {
+                let maxLen = key.toString().length;
+                exportData.forEach(row => {
+                    const val = row[key] ? row[key].toString() : '';
+                    if (val.length > maxLen) maxLen = val.length;
+                });
+                return { wch: maxLen + 5 };
+            });
+            worksheet['!cols'] = colWidths;
+
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
             XLSX.writeFile(workbook, "سجل_بيانات_الطلاب_متوسطة_الجوادين.xlsx");
