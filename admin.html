@@ -31,7 +31,7 @@
             min-height: 100vh;
         }
 
-        /* نافذة الحماية الفخمة */
+        /* نافذة الحماية */
         #loginOverlay {
             position: fixed;
             top: 0;
@@ -282,53 +282,17 @@
             transition: 0.2s;
         }
 
-        /* للتلفونات الصغيرة */
         @media (max-width: 600px) {
-            header {
-                padding: 12px;
-            }
-            .header-logo {
-                height: 45px;
-                width: 45px;
-            }
-            .header-title h1 {
-                font-size: 15px;
-            }
-            .header-title p {
-                font-size: 10px;
-            }
-            
-            /* تحويل الجدول لنظام كروت بالموبايل */
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-            thead {
-                display: none;
-            }
-            tr {
-                margin-bottom: 12px;
-                border: 1px solid var(--border);
-                border-radius: 10px;
-                padding: 12px;
-                background: #fff;
-            }
-            td {
-                padding: 6px 0;
-                border: none;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                color: var(--text-muted);
-                font-size: 12px;
-            }
-            .action-btns {
-                width: 100%;
-                margin-top: 8px;
-            }
+            header { padding: 12px; }
+            .header-logo { height: 45px; width: 45px; }
+            .header-title h1 { font-size: 15px; }
+            .header-title p { font-size: 10px; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            tr { margin-bottom: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: #fff; }
+            td { padding: 6px 0; border: none; display: flex; justify-content: space-between; align-items: center; }
+            td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 12px; }
+            .action-btns { width: 100%; margin-top: 8px; }
         }
 
         /* النافذة المنبثقة للتفاصيل */
@@ -350,11 +314,11 @@
         .modal-card {
             background: #fff;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            max-height: 85vh;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
         }
@@ -368,9 +332,7 @@
             align-items: center;
         }
 
-        .modal-header h3 {
-            font-size: 16px;
-        }
+        .modal-header h3 { font-size: 16px; }
 
         .close-btn {
             background: transparent;
@@ -386,6 +348,17 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+        }
+
+        .section-divider {
+            grid-column: span 2;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 2px;
         }
 
         .info-group {
@@ -413,12 +386,8 @@
         }
 
         @media (max-width: 500px) {
-            .modal-body {
-                grid-template-columns: 1fr;
-            }
-            .info-group.full-width {
-                grid-column: span 1;
-            }
+            .modal-body { grid-template-columns: 1fr; }
+            .info-group.full-width, .section-divider { grid-column: span 1; }
         }
     </style>
 </head>
@@ -506,7 +475,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // رمز المرور الجديد والمبسط
         const SECRET_PASS = "jawadin2026";
 
         function checkPassword() {
@@ -576,7 +544,6 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
-            // التأكد من جلب قيمة "أقرب نقطة دالة" بجميع المسميات الممكنة في الفايربيس
             const landmarkValue = student.landmark || 
                                  student.nearestLandmark || 
                                  student.nearPoint || 
@@ -586,16 +553,71 @@
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
-                <div class="info-group full-width">
+                <!-- 1. البيانات الشخصية -->
+                <div class="section-divider">البيانات الشخصية</div>
+                <div class="info-group">
                     <div class="info-label">اسم الطالب الرباعي واللقب</div>
                     <div class="info-value">${student.fullName || '-'}</div>
                 </div>
-                <div class="info-group full-width">
+                <div class="info-group">
                     <div class="info-label">اسم الأم الثلاثي</div>
                     <div class="info-value">${student.motherName || '-'}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">الصف الدراسي</div>
+                    <div class="info-label">تاريخ التولد</div>
+                    <div class="info-value">${student.birthDate || '-'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">الجنس</div>
+                    <div class="info-value">${student.gender || 'ذكر'}</div>
+                </div>
+
+                <!-- 2. معلومات البطاقة الموحدة والجنسية -->
+                <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
+                <div class="info-group">
+                    <div class="info-label">رقم البطاقة الموحدة</div>
+                    <div class="info-value">${student.nationalId || '-'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">تاريخ إصدار البطاقة الموحدة</div>
+                    <div class="info-value">${student.issueDate || '-'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">مسقط الراس</div>
+                    <div class="info-value">${student.birthPlace || '-'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">فصيلة الدم</div>
+                    <div class="info-value">${student.bloodType || 'غير محدد'}</div>
+                </div>
+                <div class="info-group full-width">
+                    <div class="info-label">الديانة</div>
+                    <div class="info-value">${student.religion || 'مسلم'}</div>
+                </div>
+
+                <!-- 3. الحالة الاجتماعية والصحية -->
+                <div class="section-divider">الحالة الاجتماعية والصحية</div>
+                <div class="info-group">
+                    <div class="info-label">هل الطالب من ذوي الاحتياجات الخاصة؟</div>
+                    <div class="info-value">${student.specialNeeds || 'كلا'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">لغة الدراسة</div>
+                    <div class="info-value">${student.studyLanguage || 'العربية'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">المستوى الاقتصادي</div>
+                    <div class="info-value">${student.economicStatus || '-'}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">هل مشمول بمنحة الرعاية الاجتماعية؟</div>
+                    <div class="info-value">${student.socialCare || 'كلا'}</div>
+                </div>
+
+                <!-- 4. الصف الدراسي وعنوان السكن -->
+                <div class="section-divider">الصف الدراسي وعنوان السكن</div>
+                <div class="info-group">
+                    <div class="info-label">الصف الدراسي الحالي</div>
                     <div class="info-value">${student.grade || '-'}</div>
                 </div>
                 <div class="info-group">
@@ -603,36 +625,24 @@
                     <div class="info-value">${student.section || '-'}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">رقم البطاقة الموحدة</div>
-                    <div class="info-value">${student.nationalId || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">تاريخ التولد</div>
-                    <div class="info-value">${student.birthDate || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">فصيلة الدم</div>
-                    <div class="info-value">${student.bloodType || 'غير محدد'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">هاتف ولي الأمر</div>
-                    <div class="info-value">${student.parentPhone || '-'}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">المحلة</div>
+                    <div class="info-label">المحلة (م)</div>
                     <div class="info-value">${student.address?.mahalla || student.mahalla || '-'}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">الزقاق</div>
+                    <div class="info-label">الزقاق (ز)</div>
                     <div class="info-value">${student.address?.zuqaq || student.zuqaq || '-'}</div>
                 </div>
                 <div class="info-group">
-                    <div class="info-label">الدار</div>
+                    <div class="info-label">الدار (د)</div>
                     <div class="info-value">${student.address?.dar || student.dar || '-'}</div>
                 </div>
-                <div class="info-group full-width">
+                <div class="info-group">
                     <div class="info-label">أقرب نقطة دالة</div>
                     <div class="info-value">${landmarkValue}</div>
+                </div>
+                <div class="info-group full-width">
+                    <div class="info-label">رقم هاتف ولي الأمر</div>
+                    <div class="info-value">${student.parentPhone || '-'}</div>
                 </div>
             `;
 
