@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة تسجيل بيانات الطالب - مدرسة الجوادين للبنين</title>
+    <title>استمارة تسجيل بيانات الطالب - متوسطة الجوادين للبنين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -36,34 +36,59 @@
         .form-container {
             background-color: var(--card-bg);
             width: 100%;
-            max-width: 800px;
+            max-width: 820px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             padding: 35px 30px;
             border: 1px solid #e2e8f0;
         }
 
+        /* هيدر رسمي مع الشعارين */
         .form-header {
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 2px solid #1e3a8a;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            gap: 15px;
         }
 
-        .form-header h2 {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 6px;
+        .header-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
         }
 
-        .form-header p {
-            font-size: 14px;
+        .header-text {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .header-text h3 {
+            font-size: 15px;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
 
-        /* صندوق الإرشادات الرسمية */
+        .header-text h2 {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header-text h1 {
+            font-size: 21px;
+            color: #0f172a;
+            font-weight: 800;
+            background-color: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
         .instructions-box {
             background-color: #f1f5f9;
             border-right: 4px solid var(--primary);
@@ -96,7 +121,6 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
-        /* ترتيب الشبكة بشكل منتظم ومتناسق */
         .form-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -112,6 +136,10 @@
         }
 
         @media (max-width: 650px) {
+            .form-header {
+                flex-direction: column;
+                text-align: center;
+            }
             .form-row, .form-row-3 {
                 grid-template-columns: 1fr;
             }
@@ -142,15 +170,14 @@
             color: var(--text-main);
         }
 
-        /* تعديل اتجاه وتنسيق حقول التاريخ */
-        input[type="date"].form-control {
-            direction: rtl;
-            text-align: right;
-        }
-
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
+        }
+
+        .date-select-group {
+            display: flex;
+            gap: 8px;
         }
 
         .radio-group {
@@ -219,12 +246,19 @@
 <body>
 
     <div class="form-container">
+        <!-- الترويسة الرسمية بالشعارين -->
         <div class="form-header">
-            <h2>استمارة تسجيل بيانات الطالب الإلكترونية</h2>
-            <p>الموقع الرسمي - متوسطة الجوادين للبنين</p>
+            <img src="MOE_LOGO_URL" alt="شعار وزارة التربية" class="header-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Iraq.svg/250px-Coat_of_arms_of_Iraq.svg.png'">
+            
+            <div class="header-text">
+                <h3>جمهورية العراق - وزارة التربية</h3>
+                <h2>متوسطة الجوادين للبنين</h2>
+                <h1>استمارة تسجيل بيانات الطالب الإلكترونية</h1>
+            </div>
+
+            <img src="SCHOOL_LOGO_URL" alt="شعار المدرسة" class="header-logo" onerror="this.src='2.jpg'">
         </div>
 
-        <!-- تعليمات وإرشادات التسجيل الرسمي -->
         <div class="instructions-box">
             <h4>إرشادات وتعليمات ملء الاستمارة:</h4>
             <ul>
@@ -251,8 +285,12 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="birthDate">تاريخ التولد *</label>
-                    <input type="date" id="birthDate" class="form-control" dir="rtl" required>
+                    <label>تاريخ التولد *</label>
+                    <div class="date-select-group">
+                        <select id="birthDay" class="form-control" required><option value="">اليوم</option></select>
+                        <select id="birthMonth" class="form-control" required><option value="">الشهر</option></select>
+                        <select id="birthYear" class="form-control" required><option value="">السنة</option></select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>الجنس *</label>
@@ -271,8 +309,12 @@
                     <input type="text" id="nationalId" class="form-control" placeholder="أدخل الأرقام فقط" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                 </div>
                 <div class="form-group">
-                    <label for="issueDate">تاريخ إصدار البطاقة الموحدة *</label>
-                    <input type="date" id="issueDate" class="form-control" dir="rtl" required>
+                    <label>تاريخ إصدار البطاقة الموحدة *</label>
+                    <div class="date-select-group">
+                        <select id="issueDay" class="form-control" required><option value="">اليوم</option></select>
+                        <select id="issueMonth" class="form-control" required><option value="">الشهر</option></select>
+                        <select id="issueYear" class="form-control" required><option value="">السنة</option></select>
+                    </div>
                 </div>
             </div>
 
@@ -389,7 +431,6 @@
                 </div>
                 <div class="form-group">
                     <label for="parentPhone">رقم هاتف ولي الأمر *</label>
-                    <!-- تقييد الإدخال بالأرقام فقط -->
                     <input type="tel" id="parentPhone" class="form-control" placeholder="07XXXXXXXXX" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="11" required>
                 </div>
             </div>
@@ -405,6 +446,28 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // تعبئة الخيارات للأيام والشهور والسنوات تلقائياً
+        window.onload = function() {
+            populateDateSelects('birthDay', 'birthMonth', 'birthYear', 2005, 2018);
+            populateDateSelects('issueDay', 'issueMonth', 'issueYear', 2012, 2026);
+        };
+
+        function populateDateSelects(dayId, monthId, yearId, startYear, endYear) {
+            const daySel = document.getElementById(dayId);
+            const monthSel = document.getElementById(monthId);
+            const yearSel = document.getElementById(yearId);
+
+            for (let i = 1; i <= 31; i++) {
+                daySel.innerHTML += `<option value="${i < 10 ? '0' + i : i}">${i}</option>`;
+            }
+            for (let i = 1; i <= 12; i++) {
+                monthSel.innerHTML += `<option value="${i < 10 ? '0' + i : i}">${i}</option>`;
+            }
+            for (let i = endYear; i >= startYear; i--) {
+                yearSel.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        }
+
         const firebaseConfig = {
             databaseURL: "https://aljawadindatabase-default-rtdb.firebaseio.com"
         };
@@ -419,10 +482,12 @@
 
             const fullName = document.getElementById('fullName').value.trim();
             const motherName = document.getElementById('motherName').value.trim();
-            const birthDate = document.getElementById('birthDate').value;
+            
+            const birthDate = `${document.getElementById('birthYear').value}-${document.getElementById('birthMonth').value}-${document.getElementById('birthDay').value}`;
             const gender = document.querySelector('input[name="gender"]:checked').value;
             const nationalId = document.getElementById('nationalId').value.trim();
-            const issueDate = document.getElementById('issueDate').value;
+            const issueDate = `${document.getElementById('issueYear').value}-${document.getElementById('issueMonth').value}-${document.getElementById('issueDay').value}`;
+            
             const birthPlace = document.getElementById('birthPlace').value.trim();
             const bloodType = document.getElementById('bloodType').value;
             const religion = document.getElementById('religion').value;
