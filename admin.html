@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - إدارة بيانات الطلاب | متوسطة الجوادين للبنين</title>
+    <title>لوحة التحكم - متوسطة الجوادين للبنين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1e3a8a;
-            --primary-dark: #1e1b4b;
+            --primary-dark: #0f172a;
+            --accent: #d97706;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --text-muted: #475569;
+            --border: #cbd5e1;
             --danger: #dc2626;
-            --success: #16a34a;
         }
 
         * {
@@ -31,59 +31,116 @@
             padding: 20px;
         }
 
+        /* نافذة الحماية بكلمة السر */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid var(--accent);
+        }
+
+        .login-card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .login-card button:hover {
+            background: var(--primary-dark);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* المحتوى الرئيسي */
         .dashboard-container {
-            max-width: 1400px;
+            display: none; /* ينعرض بعد كتابة الرمز الصحيح */
+            max-width: 1500px;
             margin: 0 auto;
         }
 
         header {
             background: var(--card-bg);
-            padding: 20px 25px;
+            padding: 15px 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            border-top: 5px solid var(--accent);
+            border-bottom: 1px solid var(--border);
         }
 
-        header h1 {
-            font-size: 20px;
-            color: var(--primary);
-            font-weight: 800;
+        .header-logo {
+            height: 65px;
+            width: auto;
+            object-fit: contain;
         }
 
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 18px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+        .header-title {
             text-align: center;
         }
 
-        .stat-card h3 {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+        .header-title h1 {
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 800;
         }
 
-        .stat-card p {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
         .controls {
             background: var(--card-bg);
-            padding: 18px;
+            padding: 15px 20px;
             border-radius: 10px;
             border: 1px solid var(--border);
             margin-bottom: 20px;
@@ -94,7 +151,7 @@
         }
 
         .search-input, .filter-select {
-            height: 40px;
+            height: 42px;
             padding: 0 12px;
             border: 1px solid var(--border);
             border-radius: 6px;
@@ -119,20 +176,20 @@
             width: 100%;
             border-collapse: collapse;
             text-align: right;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
         th {
             background-color: #f1f5f9;
             color: var(--primary-dark);
-            padding: 12px 15px;
-            font-weight: 700;
+            padding: 14px 12px;
+            font-weight: 800;
             border-bottom: 2px solid var(--border);
             white-space: nowrap;
         }
 
         td {
-            padding: 12px 15px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
         }
@@ -146,9 +203,6 @@
             border-radius: 4px;
             font-size: 12px;
             font-weight: 700;
-        }
-
-        .badge-grade {
             background-color: #e0e7ff;
             color: #3730a3;
         }
@@ -156,7 +210,7 @@
         .btn-delete {
             background: #fee2e2;
             color: var(--danger);
-            border: none;
+            border: 1px solid #fca5a5;
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
@@ -165,7 +219,8 @@
         }
 
         .btn-delete:hover {
-            background: #fca5a5;
+            background: var(--danger);
+            color: white;
         }
 
         .loading-text {
@@ -178,32 +233,30 @@
 </head>
 <body>
 
-    <div class="dashboard-container">
+    <!-- نافذة تسجيل الدخول -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>لوحة التحكم - تسجيل الدخول</h2>
+            <p style="font-size: 13px; color: #64748b;">يرجى إدخال رمز المرور لمشاهدة بيانات الطلاب</p>
+            <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
+            <button onclick="checkPassword()">دخول الصفحة</button>
+            <div id="errorMsg" class="error-msg">رمز المرور غير صحيح!</div>
+        </div>
+    </div>
+
+    <!-- محتوى لوحة التحكم الرئيسي -->
+    <div class="dashboard-container" id="mainDashboard">
         <header>
-            <h1>نظام إدارة بيانات الطلاب - متوسطة الجوادين للبنين</h1>
+            <img src="شعار_وزارة_التربية_العراقية.svg" alt="شعار وزارة التربية" class="header-logo">
+            <div class="header-title">
+                <h1>جمهورية العراق - وزارة التربية</h1>
+                <p>سجل بيانات الطلاب الإلكتروني - متوسطة الجوادين للبنين</p>
+            </div>
+            <img src="2.jpg" alt="شعار المدرسة" class="header-logo" style="border-radius: 50%;">
         </header>
 
-        <div class="stats-bar">
-            <div class="stat-card">
-                <h3>إجمالي الطلاب المسجلين</h3>
-                <p id="totalStudents">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>الصف الأول متوسط</h3>
-                <p id="countGrade1">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>الصف الثاني متوسط</h3>
-                <p id="countGrade2">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>الصف الثالث متوسط</h3>
-                <p id="countGrade3">0</p>
-            </div>
-        </div>
-
         <div class="controls">
-            <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحد..." oninput="filterData()">
+            <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، الأم، البطاقة الموحدة، أو الهاتف..." oninput="filterData()">
             
             <select id="filterGrade" class="filter-select" onchange="filterData()">
                 <option value="">جميع الصفوف</option>
@@ -231,16 +284,18 @@
                         <th>اسم الطالب الرباعي</th>
                         <th>اسم الأم الثلاثي</th>
                         <th>الصف والشعبة</th>
-                        <th>رقم البطاقة الموحدة</th>
+                        <th>البطاقة الموحدة</th>
                         <th>تاريخ التولد</th>
                         <th>هاتف ولي الأمر</th>
-                        <th>عنوان السكن</th>
+                        <th>هاتف الطالب</th>
+                        <th>العنوان التفصيلي</th>
+                        <th>ملاحظات / حالة</th>
                         <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="studentsTableBody">
                     <tr>
-                        <td colspan="9" class="loading-text">جاري تحميل البيانات من قاعدة البيانات...</td>
+                        <td colspan="11" class="loading-text">جاري تحميل البيانات من قاعدة البيانات...</td>
                     </tr>
                 </tbody>
             </table>
@@ -252,6 +307,23 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        const SECRET_PASS = "jawadim_database_124";
+
+        function checkPassword() {
+            const input = document.getElementById('passInput').value;
+            if (input === SECRET_PASS) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'block';
+                loadFirebaseData();
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') checkPassword();
+        }
+
         const firebaseConfig = {
             databaseURL: "https://aljawadindatabase-default-rtdb.firebaseio.com"
         };
@@ -260,25 +332,18 @@
 
         let allStudents = [];
 
-        // جلب البيانات لحظياً من Firebase
-        database.ref('students').on('value', snapshot => {
-            allStudents = [];
-            const data = snapshot.val();
-            
-            if (data) {
-                for (let id in data) {
-                    allStudents.push({ id, ...data[id] });
+        function loadFirebaseData() {
+            database.ref('students').on('value', snapshot => {
+                allStudents = [];
+                const data = snapshot.val();
+                
+                if (data) {
+                    for (let id in data) {
+                        allStudents.push({ id, ...data[id] });
+                    }
                 }
-            }
-            updateStats();
-            renderTable(allStudents);
-        });
-
-        function updateStats() {
-            document.getElementById('totalStudents').innerText = allStudents.length;
-            document.getElementById('countGrade1').innerText = allStudents.filter(s => s.grade === 'الأول متوسط').length;
-            document.getElementById('countGrade2').innerText = allStudents.filter(s => s.grade === 'الثاني متوسط').length;
-            document.getElementById('countGrade3').innerText = allStudents.filter(s => s.grade === 'الثالث متوسط').length;
+                renderTable(allStudents);
+            });
         }
 
         function renderTable(data) {
@@ -286,7 +351,7 @@
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="loading-text">لا توجد بيانات مطابقة للبحث.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" class="loading-text">لا توجد بيانات مطابقة للبحث.</td></tr>';
                 return;
             }
 
@@ -294,18 +359,20 @@
                 const mahalla = student.address?.mahalla ? `م/${student.address.mahalla}` : '';
                 const zuqaq = student.address?.zuqaq ? `ز/${student.address.zuqaq}` : '';
                 const dar = student.address?.dar ? `د/${student.address.dar}` : '';
-                const fullAddress = `${mahalla} ${zuqaq} ${dar}`.trim() || 'غير محدد';
+                const fullAddress = `${mahalla} ${zuqaq} ${dar}`.trim() || student.fullAddress || 'غير محدد';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${student.fullName || ''}</strong></td>
-                    <td>${student.motherName || ''}</td>
-                    <td><span class="badge badge-grade">${student.grade || ''} - ${student.section || ''}</span></td>
-                    <td>${student.nationalId || ''}</td>
-                    <td>${student.birthDate || ''}</td>
-                    <td>${student.parentPhone || ''}</td>
+                    <td><strong>${student.fullName || '-'}</strong></td>
+                    <td>${student.motherName || '-'}</td>
+                    <td><span class="badge">${student.grade || '-'} / ${student.section || '-'}</span></td>
+                    <td>${student.nationalId || '-'}</td>
+                    <td>${student.birthDate || '-'}</td>
+                    <td>${student.parentPhone || '-'}</td>
+                    <td>${student.studentPhone || '-'}</td>
                     <td>${fullAddress}</td>
+                    <td>${student.notes || student.status || 'مستمر'}</td>
                     <td>
                         <button class="btn-delete" onclick="deleteStudent('${student.id}', '${student.fullName}')">حذف</button>
                     </td>
@@ -322,7 +389,8 @@
             const filtered = allStudents.filter(s => {
                 const matchesSearch = (s.fullName && s.fullName.toLowerCase().includes(search)) ||
                                       (s.motherName && s.motherName.toLowerCase().includes(search)) ||
-                                      (s.nationalId && s.nationalId.includes(search));
+                                      (s.nationalId && s.nationalId.includes(search)) ||
+                                      (s.parentPhone && s.parentPhone.includes(search));
                 
                 const matchesGrade = selectedGrade === '' || s.grade === selectedGrade;
                 const matchesSection = selectedSection === '' || s.section === selectedSection;
