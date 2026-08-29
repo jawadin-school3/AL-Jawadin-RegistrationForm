@@ -8,15 +8,14 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --primary-dark: #0f172a;
-            --accent: #d97706;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            --primary-hover: #1e40af;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --success: #16a34a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --danger: #dc2626;
+            --success: #15803d;
         }
 
         * {
@@ -27,612 +26,326 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background-color: var(--bg);
             color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        /* نافذة الحماية */
-        #loginOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-gradient);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
             padding: 20px;
         }
 
-        .login-card {
-            background: #ffffff;
-            padding: 35px 25px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 2px solid var(--accent);
-        }
-
-        .login-logos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .login-logos img {
-            height: 75px;
-            width: 75px;
-            object-fit: contain;
-            border-radius: 50%;
-            background: #f8fafc;
-            padding: 4px;
-            border: 2px solid var(--accent);
-        }
-
-        .login-card h2 {
-            color: var(--primary);
-            margin-bottom: 6px;
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .login-card p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .password-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .password-container input {
-            width: 100%;
-            padding: 12px 40px 12px 12px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            text-align: center;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .password-container input:focus {
-            border-color: var(--primary);
-        }
-
-        .eye-icon {
-            position: absolute;
-            top: 50%;
-            left: 12px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 18px;
-            user-select: none;
-        }
-
-        .login-card button {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-
-        .login-card button:hover {
-            background: var(--primary-dark);
-        }
-
-        .error-msg {
-            color: var(--danger);
-            font-size: 13px;
-            margin-top: 10px;
-            font-weight: bold;
-            display: none;
-        }
-
-        /* الواجهة الرئيسية */
-        .dashboard-container {
-            display: none;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-
-        header {
-            background: var(--card-bg);
-            padding: 15px 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            border-top: 5px solid var(--accent);
-            border-bottom: 1px solid var(--border);
-            gap: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
         }
 
-        .header-logo {
-            height: 60px;
-            width: 60px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .header-title {
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .header-title h1 {
-            font-size: 18px;
+        .admin-header h1 {
+            font-size: 20px;
             color: var(--primary);
             font-weight: 800;
         }
 
-        .header-title p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 3px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
-        .controls {
-            background: var(--card-bg);
-            padding: 15px;
+        .stat-card {
+            background: white;
+            padding: 20px;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            text-align: center;
         }
 
-        .search-input {
-            flex: 2;
-            min-width: 200px;
-            height: 42px;
-            padding: 0 12px;
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-card span {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .controls-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .search-input, .filter-select {
+            padding: 10px 15px;
             border: 1px solid var(--border);
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+            flex-grow: 1;
+            min-width: 200px;
         }
 
-        .filter-select {
-            flex: 1;
-            min-width: 130px;
-            height: 42px;
-            padding: 0 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            background: #fff;
+        .search-input:focus, .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
         }
 
         .table-container {
-            background: var(--card-bg);
+            background: white;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: right;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 14px 18px;
             font-size: 14px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         th {
             background-color: #f1f5f9;
-            color: var(--primary-dark);
-            padding: 14px 12px;
+            color: var(--primary);
             font-weight: 800;
-            border-bottom: 2px solid var(--border);
-        }
-
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid var(--border);
         }
 
         tr:hover {
             background-color: #f8fafc;
         }
 
-        .badge {
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            background-color: #e0e7ff;
-            color: #3730a3;
-            display: inline-block;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-view {
-            background: #0284c7;
+        .action-btn {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 13px;
             font-weight: 700;
-            font-size: 12px;
-            transition: 0.2s;
-            flex-grow: 1;
-            text-align: center;
+            transition: background 0.2s;
         }
 
-        .btn-delete {
-            background: #fee2e2;
-            color: var(--danger);
-            border: 1px solid #fca5a5;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 12px;
-            transition: 0.2s;
+        .action-btn:hover {
+            background-color: var(--primary-hover);
         }
 
-        @media (max-width: 600px) {
-            header { padding: 12px; }
-            .header-logo { height: 45px; width: 45px; }
-            .header-title h1 { font-size: 15px; }
-            .header-title p { font-size: 10px; }
-            table, thead, tbody, th, td, tr { display: block; }
-            thead { display: none; }
-            tr { margin-bottom: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: #fff; }
-            td { padding: 6px 0; border: none; display: flex; justify-content: space-between; align-items: center; }
-            td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 12px; }
-            .action-btns { width: 100%; margin-top: 8px; }
+        .delete-btn {
+            background-color: var(--danger);
+            margin-right: 6px;
         }
 
-        /* النافذة المنبثقة للتفاصيل */
-        .modal-overlay {
+        .delete-btn:hover {
+            background-color: #b91c1c;
+        }
+
+        /* نافذة التفاصيل المنبثقة Modal */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(4px);
-            display: none;
+            background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 1000;
             padding: 15px;
         }
 
-        .modal-card {
-            background: #fff;
+        .modal-content {
+            background: white;
             width: 100%;
-            max-width: 650px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-width: 750px;
+            border-radius: 12px;
+            padding: 25px;
             max-height: 90vh;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         .modal-header {
-            background: var(--primary);
-            color: white;
-            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .modal-header h3 { font-size: 16px; }
-
-        .modal-header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .modal-header h2 {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 800;
         }
 
-        .btn-print {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.4);
-            padding: 5px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .btn-print:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .close-btn {
-            background: transparent;
+        .close-modal {
+            background: none;
             border: none;
-            color: white;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
+            color: var(--danger);
+            font-weight: 800;
         }
 
-        .modal-body {
-            padding: 15px;
-            overflow-y: auto;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .section-divider {
-            grid-column: span 2;
-            font-size: 12px;
+        .details-section-title {
+            font-size: 15px;
             font-weight: 800;
             color: var(--primary);
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 2px;
-            margin-top: 6px;
-            margin-bottom: 2px;
+            margin: 20px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .info-group {
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media(max-width: 600px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-item {
             background: #f8fafc;
-            padding: 6px 10px;
+            border: 1px solid #e2e8f0;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-info span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .detail-info strong {
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .copy-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 4px 10px;
             border-radius: 6px;
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .info-group.full-width {
-            grid-column: span 2;
-        }
-
-        .info-content {
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        .info-label {
-            font-size: 10.5px;
-            color: var(--text-muted);
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .info-value {
-            font-size: 12.5px;
-            color: var(--text-main);
-            font-weight: 700;
-            word-break: break-all;
-        }
-
-        .split-subfields {
-            display: flex;
-            gap: 6px;
-            margin-top: 3px;
-        }
-
-        .subfield-box {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 3px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex: 1;
-        }
-
-        .subfield-info {
-            font-size: 11px;
-            color: var(--text-main);
-            font-weight: 700;
-        }
-
-        .subfield-info span {
-            color: var(--text-muted);
-            font-size: 9.5px;
-            margin-left: 3px;
-        }
-
-        .btn-copy-sub {
-            background: #e2e8f0;
-            color: var(--primary-dark);
-            border: none;
-            padding: 2px 5px;
-            border-radius: 3px;
             cursor: pointer;
-            font-size: 9.5px;
+            font-size: 12px;
             font-weight: 700;
-            transition: 0.2s;
+            color: var(--primary);
+            transition: background 0.2s;
         }
 
-        .btn-copy-sub:hover {
-            background: var(--primary);
+        .copy-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .print-btn {
+            background-color: #0d9488;
             color: white;
-        }
-
-        .btn-copy {
-            background: #e2e8f0;
-            color: var(--primary-dark);
             border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 11px;
             font-weight: 700;
-            flex-shrink: 0;
-            margin-right: 8px;
-            transition: 0.2s;
+            font-size: 14px;
         }
-
-        .btn-copy:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* تنسيقات الطباعة النقية في ورقة واحدة A4 وإخفاء أزرار النسخ عند الطباعة */
-        @media print {
-            @page {
-                size: A4 portrait;
-                margin: 5mm;
-            }
-            body {
-                background: #fff !important;
-            }
-            body * {
-                visibility: hidden;
-            }
-            #detailsModal, #detailsModal * {
-                visibility: visible;
-            }
-            #detailsModal {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: auto;
-                background: transparent !important;
-                padding: 0;
-                display: block !important;
-            }
-            .modal-card {
-                max-width: 100% !important;
-                max-height: none !important;
-                box-shadow: none !important;
-                border: none !important;
-                overflow: visible !important;
-            }
-            .modal-body {
-                overflow: visible !important;
-                max-height: none !important;
-                padding: 5px !important;
-                gap: 4px !important;
-            }
-            .section-divider {
-                margin-top: 4px !important;
-                margin-bottom: 1px !important;
-                font-size: 11px !important;
-            }
-            .info-group {
-                padding: 4px 8px !important;
-            }
-            .btn-copy, .btn-copy-sub, .close-btn, .btn-print, .modal-header {
-                display: none !important;
-            }
+        .print-btn:hover {
+            background-color: #0f766e;
         }
     </style>
 </head>
 <body>
 
-    <!-- نافذة تسجيل الدخول -->
-    <div id="loginOverlay">
-        <div class="login-card">
-            <div class="login-logos">
-                <img src="شعار_وزارة_التربية_العراقية.svg" alt="وزارة التربية">
-                <img src="2.jpg" alt="متوسطة الجوادين">
-            </div>
-            <h2>لوحة التحكم الإدارية</h2>
-            <p>متوسطة الجوادين للبنين</p>
-            <div class="password-container">
-                <input type="password" id="passInput" placeholder="أدخل رمز المرور..." onkeypress="handleKeyPress(event)">
-                <span class="eye-icon" id="eyeBtn" onclick="togglePassword()">عرض</span>
-            </div>
-            <button onclick="checkPassword()">دخول الصفحة</button>
-            <div id="errorMsg" class="error-msg">رمز المرور غير صحيح!</div>
+    <div class="admin-header">
+        <h1>لوحة تحكم استمارات الطلاب - متوسطة الجوادين</h1>
+        <button class="print-btn" onclick="window.print()">طباعة القائمة</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>إجمالي الطلاب المسجلين</h3>
+            <span id="totalStudentsCount">0</span>
         </div>
     </div>
 
-    <!-- المحتوى الرئيسي -->
-    <div class="dashboard-container" id="mainDashboard">
-        <header>
-            <img src="شعار_وزارة_التربية_العراقية.svg" alt="شعار وزارة التربية" class="header-logo">
-            <div class="header-title">
-                <h1>وزارة التربية العراقية</h1>
-                <p>سجل بيانات الطلاب - متوسطة الجوادين للبنين</p>
-            </div>
-            <img src="2.jpg" alt="شعار المدرسة" class="header-logo" style="border-radius: 50%;">
-        </header>
-
-        <div class="controls">
-            <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحد..." oninput="filterData()">
-            
-            <select id="filterGrade" class="filter-select" onchange="filterData()">
-                <option value="">جميع الصفوف</option>
-                <option value="الأول متوسط">الأول متوسط</option>
-                <option value="الثاني متوسط">الثاني متوسط</option>
-                <option value="الثالث متوسط">الثالث متوسط</option>
-            </select>
-
-            <select id="filterSection" class="filter-select" onchange="filterData()">
-                <option value="">جميع الشعب</option>
-                <option value="أ">أ</option>
-                <option value="ب">ب</option>
-                <option value="ج">ج</option>
-                <option value="د">د</option>
-                <option value="هـ">هـ</option>
-                <option value="و">و</option>
-            </select>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">#</th>
-                        <th>اسم الطالب الرباعي واللقب</th>
-                        <th>الصف والشعبة</th>
-                        <th style="text-align: center;">الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="studentsTableBody">
-                    <tr>
-                        <td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">جاري تحميل البيانات...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="controls-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الطالب أو رقم البطاقة..." onkeyup="filterTable()">
+        <select id="gradeFilter" class="filter-select" onchange="filterTable()">
+            <option value="">كل الصفوف</option>
+            <option value="الأول متوسط">الأول متوسط</option>
+            <option value="الثاني متوسط">الثاني متوسط</option>
+            <option value="الثالث متوسط">الثالث متوسط</option>
+        </select>
+        <select id="sectionFilter" class="filter-select" onchange="filterTable()">
+            <option value="">كل الشعب</option>
+            <option value="أ">أ</option>
+            <option value="ب">ب</option>
+            <option value="ج">ج</option>
+            <option value="د">د</option>
+            <option value="هـ">هـ</option>
+            <option value="و">و</option>
+        </select>
     </div>
 
-    <!-- نافذة التفاصيل -->
-    <div class="modal-overlay" id="detailsModal">
-        <div class="modal-card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ت</th>
+                    <th>اسم الطالب الكامل</th>
+                    <th>الصف</th>
+                    <th>الشعبة</th>
+                    <th>رقم البطاقة الموحدة</th>
+                    <th>هاتف ولي الأمر</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+                <!-- يتم تعبئتها ديناميكياً -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- نافذة عرض تفاصيل الطالب الكاملة -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3>استمارة بيانات الطالب الكاملة</h3>
-                <div class="modal-header-actions">
-                    <button class="btn-print" onclick="window.print()">طباعة</button>
-                    <button class="close-btn" onclick="closeModal()">&times;</button>
-                </div>
+                <h2>استمارة بيانات الطالب الكاملة</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
-            <div class="modal-body" id="modalContent"></div>
+            <div id="modalBodyContent">
+                <!-- محتوى التفاصيل -->
+            </div>
         </div>
     </div>
 
@@ -641,235 +354,209 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        const SECRET_PASS = "jawadin2026";
-
-        function togglePassword() {
-            const passInput = document.getElementById('passInput');
-            const eyeBtn = document.getElementById('eyeBtn');
-            if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeBtn.textContent = 'إخفاء';
-            } else {
-                passInput.type = 'password';
-                eyeBtn.textContent = 'عرض';
-            }
-        }
-
-        function checkPassword() {
-            const input = document.getElementById('passInput').value;
-            if (input === SECRET_PASS) {
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainDashboard').style.display = 'block';
-                loadFirebaseData();
-            } else {
-                document.getElementById('errorMsg').style.display = 'block';
-            }
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') checkPassword();
-        }
-
-        function copyToClipboard(text, btnElement) {
-            if (!text || text === '-') {
-                alert('لا توجد بيانات للنسخ');
-                return;
-            }
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = btnElement.textContent;
-                btnElement.textContent = 'تم النسخ';
-                btnElement.style.background = '#16a34a';
-                btnElement.style.color = '#fff';
-                setTimeout(() => {
-                    btnElement.textContent = originalText;
-                    btnElement.style.background = '';
-                    btnElement.style.color = '';
-                }, 1500);
-            }).catch(err => {
-                console.error('فشل النسخ', err);
-            });
-        }
-
         const firebaseConfig = {
             databaseURL: "https://aljawadindatabase-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        let allStudents = [];
-        let currentFilteredStudents = [];
+        let allStudentsData = [];
 
-        function loadFirebaseData() {
+        window.onload = function() {
+            fetchStudents();
+        };
+
+        function fetchStudents() {
             database.ref('students').on('value', snapshot => {
-                allStudents = [];
-                const data = snapshot.val();
-                
-                if (data) {
-                    for (let id in data) {
-                        allStudents.push({ id, ...data[id] });
-                    }
-                }
-                filterData();
+                const tbody = document.getElementById('studentsTableBody');
+                tbody.innerHTML = '';
+                allStudentsData = [];
+                let count = 0;
+
+                snapshot.forEach(childSnapshot => {
+                    const student = childSnapshot.val();
+                    student.id = childSnapshot.key;
+                    allStudentsData.push(student);
+                    count++;
+                });
+
+                document.getElementById('totalStudentsCount').innerText = count;
+                renderTable(allStudentsData);
             });
         }
 
-        function renderTable(data) {
+        function renderTable(students) {
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد بيانات مطابقة للبحث.</td></tr>';
+            if (students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 25px;">لا توجد بيانات مطابقة للبحث</td></tr>`;
                 return;
             }
 
-            data.forEach((student, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td data-label="#">${index + 1}</td>
-                    <td data-label="الاسم"><strong>${student.fullName || '-'}</strong></td>
-                    <td data-label="الصف"><span class="badge">${student.grade || '-'} / ${student.section || '-'}</span></td>
+            let index = 1;
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index++}</td>
+                    <td><strong>${student.fullName || ''}</strong></td>
+                    <td>${student.grade || ''}</td>
+                    <td>${student.section || ''}</td>
+                    <td>${student.nationalId || ''}</td>
+                    <td>${student.parentPhone || ''}</td>
                     <td>
-                        <div class="action-btns">
-                            <button class="btn-view" onclick="openDetails('${student.id}')">عرض البيانات</button>
-                            <button class="btn-delete" onclick="deleteStudent('${student.id}', '${student.fullName}')">حذف</button>
-                        </div>
+                        <button class="action-btn" onclick="showStudentDetails('${student.id}')">عرض وتفاصيل</button>
+                        <button class="action-btn delete-btn" onclick="deleteStudent('${student.id}')">حذف</button>
                     </td>
                 `;
-                tbody.appendChild(row);
+                tbody.appendChild(tr);
             });
         }
 
-        function createInfoGroup(label, value, isFullWidth = false) {
-            const safeValue = value || '-';
-            const fullClass = isFullWidth ? 'full-width' : '';
-            return `
-                <div class="info-group ${fullClass}">
-                    <div class="info-content">
-                        <div class="info-label">${label}</div>
-                        <div class="info-value">${safeValue}</div>
-                    </div>
-                    <button class="btn-copy" onclick="copyToClipboard('${safeValue.toString().replace(/'/g, "\\'")}', this)">نسخ</button>
-                </div>
-            `;
+        function filterTable() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const gradeVal = document.getElementById('gradeFilter').value;
+            const sectionVal = document.getElementById('sectionFilter').value;
+
+            const filtered = allStudentsData.filter(student => {
+                const matchSearch = (student.fullName && student.fullName.toLowerCase().includes(searchVal)) || 
+                                    (student.nationalId && student.nationalId.includes(searchVal));
+                const matchGrade = gradeVal === "" || student.grade === gradeVal;
+                const matchSection = sectionVal === "" || student.section === sectionVal;
+
+                return matchSearch && matchGrade && matchSection;
+            });
+
+            renderTable(filtered);
         }
 
-        // دالة مساعدة لفصل تاريخ (سنة / شهر / يوم) مع أزرار نسخ لكل جزء
-        function createSplitDateGroup(label, dateStr, isFullWidth = false) {
-            const safeDate = dateStr || '-';
-            let year = '-', month = '-', day = '-';
+        function showStudentDetails(id) {
+            const student = allStudentsData.find(s => s.id === id);
+            if (!student) return;
+
+            let birthParts = (student.birthDate || '').split('-');
+            let bYear = birthParts[0] || '';
+            let bMonth = birthParts[1] || '';
+            let bDay = birthParts[2] || '';
+
+            let issueParts = (student.issueDate || '').split('-');
+            let iYear = issueParts[0] || '';
+            let iMonth = issueParts[1] || '';
+            let iDay = issueParts[2] || '';
+
+            const modalBody = document.getElementById('modalBodyContent');
             
-            if (safeDate !== '-') {
-                const parts = safeDate.split(/[-/]/);
-                if (parts.length === 3) {
-                    // نفترض التنسيق YYYY-MM-DD أو DD-MM-YYYY حسب المدخل
-                    if (parts[0].length === 4) {
-                        year = parts[0];
-                        month = parts[1];
-                        day = parts[2];
-                    } else {
-                        day = parts[0];
-                        month = parts[1];
-                        year = parts[2];
-                    }
-                }
-            }
-
-            const fullClass = isFullWidth ? 'full-width' : '';
-
-            return `
-                <div class="info-group ${fullClass}">
-                    <div class="info-content">
-                        <div class="info-label">${label} (الكامل: ${safeDate})</div>
-                        <div class="split-subfields">
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>سنة:</span>${year}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${year}', this)">نسخ</button>
-                            </div>
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>شهر:</span>${month}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${month}', this)">نسخ</button>
-                            </div>
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>يوم:</span>${day}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${day}', this)">نسخ</button>
+            modalBody.innerHTML = `
+                <div class="details-section-title">البيانات الشخصية</div>
+                <div class="details-grid">
+                    ${createDetailBox("الطالب الرباعي واللقب", student.fullName)}
+                    ${createDetailBox("اسم الأم الثلاثي", student.motherName)}
+                    
+                    <div class="detail-item" style="grid-column: span 2;">
+                        <div class="detail-info" style="width: 100%;">
+                            <span>تاريخ التولد (الكامل: ${student.birthDate || ''})</span>
+                            <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">سنة: <strong>${bYear}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${bYear}')">نسخ</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">شهر: <strong>${bMonth}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${bMonth}')">نسخ</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">يوم: <strong>${bDay}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${bDay}')">نسخ</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="btn-copy" onclick="copyToClipboard('${safeDate.toString().replace(/'/g, "\\'")}', this)">نسخ الكل</button>
+
+                    ${createDetailBox("الجنس", student.gender)}
+                </div>
+
+                <div class="details-section-title">معلومات البطاقة الموحدة والجنسية</div>
+                <div class="details-grid">
+                    ${createDetailBox("رقم البطاقة الموحدة", student.nationalId)}
+                    
+                    <div class="detail-item" style="grid-column: span 2;">
+                        <div class="detail-info" style="width: 100%;">
+                            <span>تاريخ إصدار البطاقة الموحدة (الكامل: ${student.issueDate || ''})</span>
+                            <div style="display: flex; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">سنة: <strong>${iYear}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${iYear}')">نسخ</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">شهر: <strong>${iMonth}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${iMonth}')">نسخ</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px; background: #fff; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                    <span style="font-size: 13px;">يوم: <strong>${iDay}</strong></span>
+                                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${iDay}')">نسخ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${createDetailBox("مسقط الرأس", student.birthPlace)}
+                    ${createDetailBox("فصيلة الدم", student.bloodType)}
+                    ${createDetailBox("الديانة", student.religion)}
+                </div>
+
+                <div class="details-section-title">الحالة الاجتماعية والصحية</div>
+                <div class="details-grid">
+                    ${createDetailBox("ذوي الاحتياجات الخاصة", student.specialNeeds)}
+                    ${createDetailBox("لغة الدراسة", student.studyLanguage)}
+                    ${createDetailBox("المستوى الاقتصادي", student.economicLevel)}
+                    ${createDetailBox("منحة الرعاية الاجتماعية", student.socialCare)}
+                </div>
+
+                <div class="details-section-title">الصف الدراسي وعنوان السكن</div>
+                <div class="details-grid">
+                    ${createDetailBox("الصف الدراسي الحالي", student.grade)}
+                    ${createDetailBox("الشعبة", student.section)}
+                    ${createDetailBox("محلة (م/)", student.address ? student.address.mahalla : '')}
+                    ${createDetailBox("الزقاق (ز/)", student.address ? student.address.zuqaq : '')}
+                    ${createDetailBox("الدار (د/)", student.address ? student.address.dar : '')}
+                    ${createDetailBox("أقرب نقطة دالة", student.nearestPoint)}
+                    ${createDetailBox("هاتف ولي الأمر", student.parentPhone)}
                 </div>
             `;
+
+            document.getElementById('studentModal').style.display = 'flex';
         }
 
-        function openDetails(id) {
-            const student = allStudents.find(s => s.id === id);
-            if (!student) return;
-
-            const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
-            const ecoValue = student.economicLevel || student.economicStatus || '-';
-
-            const modalContent = document.getElementById('modalContent');
-            modalContent.innerHTML = `
-                <div class="section-divider">البيانات الشخصية</div>
-                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
-                ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
-                ${createSplitDateGroup('تاريخ التولد', student.birthDate)}
-                ${createInfoGroup('الجنس', student.gender || 'ذكر')}
-
-                <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
-                ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId)}
-                ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
-                ${createInfoGroup('مسقط الراس', student.birthPlace)}
-                ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
-                ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
-
-                <div class="section-divider">الحالة الاجتماعية والصحية</div>
-                ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
-                ${createInfoGroup('لغة الدراسة', student.studyLanguage || 'العربية')}
-                ${createInfoGroup('المستوى الاقتصادي', ecoValue)}
-                ${createInfoGroup('منحة الرعاية الاجتماعية', student.socialCare || 'كلا')}
-
-                <div class="section-divider">الصف الدراسي وعنوان السكن</div>
-                ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
-                ${createInfoGroup('الشعبة', student.section)}
-                ${createInfoGroup('المحلة (م)', student.address?.mahalla || student.mahalla)}
-                ${createInfoGroup('الزقاق (ز)', student.address?.zuqaq || student.zuqaq)}
-                ${createInfoGroup('الدار (د)', student.address?.dar || student.dar)}
-                ${createInfoGroup('أقرب نقطة دالة', landmarkValue)}
-                ${createInfoGroup('رقم هاتف ولي الأمر', student.parentPhone, true)}
+        function createDetailBox(label, value) {
+            const safeVal = value || 'غير مطبق';
+            return `
+                <div class="detail-item">
+                    <div class="detail-info">
+                        <span>${label}</span>
+                        <strong>${safeVal}</strong>
+                    </div>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('${safeVal}')">نسخ</button>
+                </div>
             `;
-
-            document.getElementById('detailsModal').style.display = 'flex';
         }
 
         function closeModal() {
-            document.getElementById('detailsModal').style.display = 'none';
+            document.getElementById('studentModal').style.display = 'none';
         }
 
-        function filterData() {
-            const search = document.getElementById('searchInput').value.trim().toLowerCase();
-            const selectedGrade = document.getElementById('filterGrade').value;
-            const selectedSection = document.getElementById('filterSection').value;
-
-            currentFilteredStudents = allStudents.filter(s => {
-                const matchesSearch = (s.fullName && s.fullName.toLowerCase().includes(search)) ||
-                                      (s.motherName && s.motherName.toLowerCase().includes(search)) ||
-                                      (s.nationalId && s.nationalId.includes(search));
-                
-                const matchesGrade = selectedGrade === '' || s.grade === selectedGrade;
-                const matchesSection = selectedSection === '' || s.section === selectedSection;
-
-                return matchesSearch && matchesGrade && matchesSection;
-            });
-
-            renderTable(currentFilteredStudents);
+        window.onclick = function(event) {
+            const modal = document.getElementById('studentModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
         }
 
-        function deleteStudent(id, name) {
-            if (confirm(`هل أنت تأكد من حذف بيانات الطالب: (${name})؟`)) {
+        function deleteStudent(id) {
+            if (confirm("هل أنت متأكد من حذف هذا الطالب نهائياً؟")) {
                 database.ref('students/' + id).remove().then(() => {
-                    alert('تم الحذف بنجاح.');
-                }).catch(() => {
-                    alert('حدث خطأ أثناء الحذف.');
+                    alert("تم حذف الطالب بنجاح.");
+                }).catch(error => {
+                    alert("حدث خطأ أثناء الحذف: " + error.message);
                 });
             }
         }
