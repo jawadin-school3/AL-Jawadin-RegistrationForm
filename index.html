@@ -256,7 +256,6 @@
             border: 1px solid #fca5a5;
         }
 
-        /* تذييل الصفحة */
         .site-footer {
             margin-top: 25px;
             text-align: center;
@@ -288,8 +287,8 @@
         <div class="instructions-box">
             <h4>إرشادات وتعليمات ملء الاستمارة:</h4>
             <ul>
-                <li>يرجى نقل وملء جميع البيانات بدقة تامة مطابقة لما هو مثبت في البطاقة الوطنية الموحدة الخاصة بالط الطالب.</li>
-                <li>تأكد من كتابة الأسماء الثلاثية أو الرباعية وأرقام الهواتف بشكل صحيح وخالٍ من أي مسافات زائدة أو رموز قبل الإرسال.</li>
+                <li>يرجى نقل وملء جميع البيانات بدقة تامة مطابقة لما هو مثبت في البطاقة الوطنية الموحدة الخاصة بالطالب.</li>
+                <li>تأكد من كتابة الاسم الكامل مع اللقب (5 كلمات على الأقل) وأرقام الهواتف بشكل صحيح وخالٍ من أي مسافات زائدة أو رموز قبل الإرسال.</li>
                 <li>يمنع منعاً باتاً تكرار تقديم الاستمارة لنفس الطالب، حيث سيكشف النظام التكرار تلقائياً ويقوم بإلغاء الطلب.</li>
                 <li>تأكد من اختيار الصف الدراسي والشعبة بدقة لضمان تسجيل البيانات في سجل المدرسة الصحيح.</li>
                 <li>مراجعة حقول عنوان السكن (المحلة، الزقاق، الدار) وكتابتها بالأرقام فقط لضمان سهولة الوصول للبيانات عند الحاجة.</li>
@@ -302,12 +301,12 @@
             <div class="section-title">البيانات الشخصية</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="fullName">الاسم الرباعي للطالب *</label>
-                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي كاملاً">
+                    <label for="fullName">الاســم الربــاعــي مـع الـلـقـب*</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="أدخل الاسم الرباعي مع اللقب كاملاً">
                     <span id="err-fullName" class="field-error"></span>
                 </div>
                 <div class="form-group">
-                    <label for="motherName">اسم الأم الثلاثي *</label>
+                    <label for="motherName">اســم الأم الثــلاثي *</label>
                     <input type="text" id="motherName" class="form-control" placeholder="أدخل اسم الأم الثلاثي">
                     <span id="err-motherName" class="field-error"></span>
                 </div>
@@ -315,7 +314,7 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>تاريخ التولد *</label>
+                    <label>تــاريــخ تــولــد الــطــالــب *</label>
                     <div class="date-select-group">
                         <select id="birthDay" class="form-control"><option value="">اليوم</option></select>
                         <select id="birthMonth" class="form-control"><option value="">الشهر</option></select>
@@ -582,10 +581,10 @@
 
             const arabicRegex = /^[\u0621-\u064A\s]+$/;
 
-            // 1. الاسم الرباعي
+            // 1. الاسم الخماسي مع اللقب (5 كلمات على الأقل)
             const nameWords = fullName ? fullName.split(' ') : [];
-            if (!fullName || !arabicRegex.test(fullName) || nameWords.length < 4 || nameWords.some(w => w.length < 2)) {
-                setFieldError('fullName', 'err-fullName', 'يرجى إدخال الاسم الرباعي الصحيح كاملاً كما في البطاقة.');
+            if (!fullName || !arabicRegex.test(fullName) || nameWords.length < 5 || nameWords.some(w => w.length < 2)) {
+                setFieldError('fullName', 'err-fullName', 'يرجى إدخال الاسم الكامل مع اللقب (5 كلمات على الأقل) وبشكل صحيح.');
                 return;
             }
 
