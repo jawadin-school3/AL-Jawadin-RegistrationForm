@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - متوسطة الجوادين للبنين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- مكتبة تصدير Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -229,26 +227,6 @@
             background: #fff;
         }
 
-        .btn-export {
-            background: var(--success);
-            color: white;
-            border: none;
-            height: 42px;
-            padding: 0 15px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-export:hover {
-            background: #15803d;
-        }
-
         .table-container {
             background: var(--card-bg);
             border-radius: 12px;
@@ -456,6 +434,52 @@
             word-break: break-all;
         }
 
+        .split-subfields {
+            display: flex;
+            gap: 6px;
+            margin-top: 3px;
+        }
+
+        .subfield-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
+
+        .subfield-info {
+            font-size: 11px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .subfield-info span {
+            color: var(--text-muted);
+            font-size: 9.5px;
+            margin-left: 3px;
+        }
+
+        .btn-copy-sub {
+            background: #e2e8f0;
+            color: var(--primary-dark);
+            border: none;
+            padding: 2px 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 9.5px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .btn-copy-sub:hover {
+            background: var(--primary);
+            color: white;
+        }
+
         .btn-copy {
             background: #e2e8f0;
             color: var(--primary-dark);
@@ -521,7 +545,7 @@
             .info-group {
                 padding: 4px 8px !important;
             }
-            .btn-copy, .close-btn, .btn-print, .modal-header {
+            .btn-copy, .btn-copy-sub, .close-btn, .btn-print, .modal-header {
                 display: none !important;
             }
         }
@@ -577,8 +601,6 @@
                 <option value="هـ">هـ</option>
                 <option value="و">و</option>
             </select>
-
-            <button class="btn-export" onclick="exportToExcel()">تصدير إلى Excel</button>
         </div>
 
         <div class="table-container">
@@ -731,6 +753,53 @@
             `;
         }
 
+        // دالة مساعدة لفصل تاريخ (سنة / شهر / يوم) مع أزرار نسخ لكل جزء
+        function createSplitDateGroup(label, dateStr, isFullWidth = false) {
+            const safeDate = dateStr || '-';
+            let year = '-', month = '-', day = '-';
+            
+            if (safeDate !== '-') {
+                const parts = safeDate.split(/[-/]/);
+                if (parts.length === 3) {
+                    // نفترض التنسيق YYYY-MM-DD أو DD-MM-YYYY حسب المدخل
+                    if (parts[0].length === 4) {
+                        year = parts[0];
+                        month = parts[1];
+                        day = parts[2];
+                    } else {
+                        day = parts[0];
+                        month = parts[1];
+                        year = parts[2];
+                    }
+                }
+            }
+
+            const fullClass = isFullWidth ? 'full-width' : '';
+
+            return `
+                <div class="info-group ${fullClass}">
+                    <div class="info-content">
+                        <div class="info-label">${label} (الكامل: ${safeDate})</div>
+                        <div class="split-subfields">
+                            <div class="subfield-box">
+                                <div class="subfield-info"><span>سنة:</span>${year}</div>
+                                <button class="btn-copy-sub" onclick="copyToClipboard('${year}', this)">نسخ</button>
+                            </div>
+                            <div class="subfield-box">
+                                <div class="subfield-info"><span>شهر:</span>${month}</div>
+                                <button class="btn-copy-sub" onclick="copyToClipboard('${month}', this)">نسخ</button>
+                            </div>
+                            <div class="subfield-box">
+                                <div class="subfield-info"><span>يوم:</span>${day}</div>
+                                <button class="btn-copy-sub" onclick="copyToClipboard('${day}', this)">نسخ</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${safeDate.toString().replace(/'/g, "\\'")}', this)">نسخ الكل</button>
+                </div>
+            `;
+        }
+
         function openDetails(id) {
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
@@ -743,12 +812,12 @@
                 <div class="section-divider">البيانات الشخصية</div>
                 ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
                 ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
-                ${createInfoGroup('تاريخ التولد', student.birthDate)}
+                ${createSplitDateGroup('تاريخ التولد', student.birthDate)}
                 ${createInfoGroup('الجنس', student.gender || 'ذكر')}
 
                 <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
                 ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId)}
-                ${createInfoGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
+                ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
                 ${createInfoGroup('مسقط الراس', student.birthPlace)}
                 ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
                 ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
@@ -793,52 +862,6 @@
             });
 
             renderTable(currentFilteredStudents);
-        }
-
-        function exportToExcel() {
-            if (currentFilteredStudents.length === 0) {
-                alert('لا توجد بيانات لتصديرها!');
-                return;
-            }
-
-            const exportData = currentFilteredStudents.map((s, index) => ({
-                "ت": index + 1,
-                "اسم الطالب الرباعي": s.fullName || '-',
-                "اسم الأم الثلاثي": s.motherName || '-',
-                "تاريخ التولد": s.birthDate || '-',
-                "الصف": s.grade || '-',
-                "الشعبة": s.section || '-',
-                "رقم البطاقة الموحدة": s.nationalId || '-',
-                "تاريخ إصدار البطاقة": s.issueDate || '-',
-                "المحافظة / مسقط الرأس": s.birthPlace || '-',
-                "فصيلة الدم": s.bloodType || '-',
-                "الديانة": s.religion || '-',
-                "احتياجات خاصة": s.specialNeeds || 'كلا',
-                "لغة الدراسة": s.studyLanguage || 'العربية',
-                "المستوى الاقتصادي": s.economicLevel || s.economicStatus || '-',
-                "رعاية اجتماعية": s.socialCare || 'كلا',
-                "المحلة": s.address?.mahalla || s.mahalla || '-',
-                "الزقاق": s.address?.zuqaq || s.zuqaq || '-',
-                "الدار": s.address?.dar || s.dar || '-',
-                "أقرب نقطة دالة": s.nearestPoint || s.nearestLandmark || '-',
-                "رقم ولي الأمر": s.parentPhone || '-'
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-            const colWidths = Object.keys(exportData[0]).map(key => {
-                let maxLen = key.toString().length;
-                exportData.forEach(row => {
-                    const val = row[key] ? row[key].toString() : '';
-                    if (val.length > maxLen) maxLen = val.length;
-                });
-                return { wch: maxLen + 5 };
-            });
-            worksheet['!cols'] = colWidths;
-
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
-            XLSX.writeFile(workbook, "سجل_بيانات_الطلاب_متوسطة_الجوادين.xlsx");
         }
 
         function deleteStudent(id, name) {
