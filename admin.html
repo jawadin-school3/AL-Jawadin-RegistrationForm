@@ -501,7 +501,6 @@
             color: white;
         }
 
-        /* 📱 تعديل استجابة الموبايل لنافذة التفاصيل لمنع الخروج عن الشاشة */
         @media (max-width: 600px) {
             .modal-body {
                 grid-template-columns: 1fr !important;
@@ -518,7 +517,6 @@
             }
         }
 
-        /* تنسيقات الطباعة النقية في ورقة واحدة A4 وإخفاء أزرار النسخ عند الطباعة */
         @media print {
             @page {
                 size: A4 portrait;
@@ -736,6 +734,13 @@
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
+            // الحالة الأولى: قاعدة البيانات خالية تماماً ولا يوجد أي طالب مسجل
+            if (allStudents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد أي بيانات مسجلة في النظام حتى الآن.</td></tr>';
+                return;
+            }
+
+            // الحالة الثانية: يوجد طلاب في القاعدة، ولكن نتيجة البحث أو الفلتر لا تطابق شيئاً
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد بيانات مطابقة للبحث.</td></tr>';
                 return;
