@@ -301,6 +301,32 @@
             transition: 0.2s;
         }
 
+        /* زر العودة للأعلى */
+        .scrollTopBtn {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .scrollTopBtn:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
         @media (max-width: 600px) {
             header { padding: 12px; }
             .header-logo { height: 45px; width: 45px; }
@@ -654,6 +680,9 @@
         </div>
     </div>
 
+    <!-- زر العودة للأعلى -->
+    <button id="scrollTopBtn" class="scrollTopBtn" onclick="scrollToTop()" title="العودة للأعلى">↑</button>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -686,6 +715,24 @@
 
         function handleKeyPress(e) {
             if (e.key === 'Enter') checkPassword();
+        }
+
+        // مراقبة التمرير لإظهار أو إخفاء زر العودة للأعلى
+        window.onscroll = function() {
+            const scrollBtn = document.getElementById('scrollTopBtn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollBtn.style.display = 'flex';
+            } else {
+                scrollBtn.style.display = 'none';
+            }
+        };
+
+        // دالة العودة بسلاسة للأعلى
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
 
         function copyToClipboard(text, btnElement) {
@@ -735,13 +782,11 @@
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
-            // الحالة الأولى: قاعدة البيانات خالية تماماً ولا يوجد أي طالب مسجل
             if (allStudents.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد أي بيانات مسجلة في النظام حتى الآن.</td></tr>';
                 return;
             }
 
-            // الحالة الثانية: يوجد طلاب في القاعدة، ولكن نتيجة البحث أو الفلتر لا تطابق شيئاً
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد بيانات مطابقة للبحث.</td></tr>';
                 return;
