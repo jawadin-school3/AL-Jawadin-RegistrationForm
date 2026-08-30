@@ -584,7 +584,7 @@
             // 1. الاسم الخماسي مع اللقب (5 كلمات على الأقل)
             const nameWords = fullName ? fullName.split(' ') : [];
             if (!fullName || !arabicRegex.test(fullName) || nameWords.length < 5 || nameWords.some(w => w.length < 2)) {
-                setFieldError('fullName', 'err-fullName', 'يرجى إدخال الاسم الكامل مع اللقب (5 كلمات على الأقل) وبشكل صحيح.');
+                setFieldError('fullName', 'err-fullName', 'يرجى إدخال الاسم الكامل مع اللقب وبشكل صحيح.');
                 return;
             }
 
