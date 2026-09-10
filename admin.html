@@ -117,7 +117,8 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: var(--text-muted);
-            font-size: 18px;
+            font-size: 14px;
+            font-weight: 700;
             user-select: none;
         }
 
@@ -288,6 +289,7 @@
             flex-grow: 1;
             text-align: center;
         }
+        .btn-view:hover { background: #0369a1; }
 
         .btn-delete {
             background: #fee2e2;
@@ -300,6 +302,7 @@
             font-size: 12px;
             transition: 0.2s;
         }
+        .btn-delete:hover { background: #fecaca; }
 
         /* زر العودة للأعلى */
         .scrollTopBtn {
@@ -397,9 +400,7 @@
             font-weight: 700;
         }
 
-        .btn-print:hover {
-            background: rgba(255,255,255,0.3);
-        }
+        .btn-print:hover { background: rgba(255,255,255,0.3); }
 
         .close-btn {
             background: transparent;
@@ -411,28 +412,28 @@
         }
 
         .modal-body {
-            padding: 12px;
+            padding: 15px;
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         .section-divider {
             grid-column: span 2;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--primary);
             border-bottom: 2px solid var(--border);
-            padding-bottom: 2px;
-            margin-top: 6px;
-            margin-bottom: 2px;
+            padding-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 4px;
         }
 
         .info-group {
             background: #f8fafc;
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             border: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
@@ -449,14 +450,14 @@
         }
 
         .info-label {
-            font-size: 10.5px;
+            font-size: 11px;
             color: var(--text-muted);
             font-weight: 700;
             margin-bottom: 2px;
         }
 
         .info-value {
-            font-size: 12.5px;
+            font-size: 13px;
             color: var(--text-main);
             font-weight: 700;
             word-break: break-word;
@@ -465,14 +466,14 @@
         .split-subfields {
             display: flex;
             gap: 6px;
-            margin-top: 3px;
+            margin-top: 4px;
         }
 
         .subfield-box {
             background: #fff;
             border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 3px 6px;
+            border-radius: 6px;
+            padding: 4px 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -487,33 +488,29 @@
 
         .subfield-info span {
             color: var(--text-muted);
-            font-size: 9.5px;
-            margin-left: 3px;
+            font-size: 10px;
+            margin-left: 4px;
         }
 
         .btn-copy-sub {
             background: #e2e8f0;
             color: var(--primary-dark);
             border: none;
-            padding: 2px 5px;
-            border-radius: 3px;
+            padding: 2px 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 9.5px;
+            font-size: 10px;
             font-weight: 700;
             transition: 0.2s;
         }
-
-        .btn-copy-sub:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .btn-copy-sub:hover { background: var(--primary); color: white; }
 
         .btn-copy {
             background: #e2e8f0;
             color: var(--primary-dark);
             border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 11px;
             font-weight: 700;
@@ -521,42 +518,20 @@
             margin-right: 8px;
             transition: 0.2s;
         }
-
-        .btn-copy:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .btn-copy:hover { background: var(--primary); color: white; }
 
         @media (max-width: 600px) {
-            .modal-body {
-                grid-template-columns: 1fr !important;
-            }
-            .section-divider {
-                grid-column: span 1 !important;
-            }
-            .info-group.full-width {
-                grid-column: span 1 !important;
-            }
-            .split-subfields {
-                flex-direction: column;
-                gap: 4px;
-            }
+            .modal-body { grid-template-columns: 1fr !important; }
+            .section-divider { grid-column: span 1 !important; }
+            .info-group.full-width { grid-column: span 1 !important; }
+            .split-subfields { flex-direction: column; gap: 6px; }
         }
 
         @media print {
-            @page {
-                size: A4 portrait;
-                margin: 5mm;
-            }
-            body {
-                background: #fff !important;
-            }
-            body * {
-                visibility: hidden;
-            }
-            #detailsModal, #detailsModal * {
-                visibility: visible;
-            }
+            @page { size: A4 portrait; margin: 10mm; }
+            body { background: #fff !important; }
+            body * { visibility: hidden; }
+            #detailsModal, #detailsModal * { visibility: visible; }
             #detailsModal {
                 position: absolute;
                 left: 0;
@@ -574,23 +549,8 @@
                 border: none !important;
                 overflow: visible !important;
             }
-            .modal-body {
-                overflow: visible !important;
-                max-height: none !important;
-                padding: 5px !important;
-                gap: 4px !important;
-            }
-            .section-divider {
-                margin-top: 4px !important;
-                margin-bottom: 1px !important;
-                font-size: 11px !important;
-            }
-            .info-group {
-                padding: 4px 8px !important;
-            }
-            .btn-copy, .btn-copy-sub, .close-btn, .btn-print, .modal-header {
-                display: none !important;
-            }
+            .modal-body { overflow: visible !important; max-height: none !important; padding: 10px !important; }
+            .btn-copy, .btn-copy-sub, .close-btn, .btn-print, .modal-header { display: none !important; }
         }
     </style>
 </head>
@@ -619,15 +579,15 @@
         <header>
             <img src="شعار_وزارة_التربية_العراقية.svg" alt="شعار وزارة التربية" class="header-logo">
             <div class="header-title">
-                <h1>جمهورية العراق - وزارة التربية </h1>
+                <h1>جمهورية العراق - وزارة التربية</h1>
                 <h1>متوسطة الجوادين للبنين</h1>
-                <p>سجل بيانات الطلاب - متوسطة الجوادين للبنين</p>
+                <p>سجل بيانات الطلاب - العام الدراسي 2026</p>
             </div>
             <img src="2.jpg" alt="شعار المدرسة" class="header-logo" style="border-radius: 50%;">
         </header>
 
         <div class="controls">
-            <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحدة" oninput="filterData()">
+            <input type="text" id="searchInput" class="search-input" placeholder="بحث باسم الطالب، اسم الأم، أو الرقم الموحد..." oninput="filterData()">
             
             <select id="filterGrade" class="filter-select" onchange="filterData()">
                 <option value="">جميع الصفوف</option>
@@ -654,7 +614,7 @@
                         <th style="width: 50px;">#</th>
                         <th>اسم الطالب الرباعي واللقب</th>
                         <th>الصف والشعبة</th>
-                        <th style="text-align: center;">الإجراءات</th>
+                        <th style="text-align: center; width: 180px;">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="studentsTableBody">
@@ -672,7 +632,7 @@
             <div class="modal-header">
                 <h3>استمارة بيانات الطالب</h3>
                 <div class="modal-header-actions">
-                    <button class="btn-print" onclick="window.print()">طباعة</button>
+                    <button class="btn-print" onclick="window.print()">طباعة الاستمارة</button>
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
             </div>
@@ -717,7 +677,6 @@
             if (e.key === 'Enter') checkPassword();
         }
 
-        // مراقبة التمرير لإظهار أو إخفاء زر العودة للأعلى
         window.onscroll = function() {
             const scrollBtn = document.getElementById('scrollTopBtn');
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -727,12 +686,8 @@
             }
         };
 
-        // دالة العودة بسلاسة للأعلى
         function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function copyToClipboard(text, btnElement) {
@@ -768,12 +723,19 @@
             database.ref('students').on('value', snapshot => {
                 allStudents = [];
                 const data = snapshot.val();
-                
                 if (data) {
                     for (let id in data) {
                         allStudents.push({ id, ...data[id] });
                     }
                 }
+                
+                // ترتيب الطلاب أبجدياً حسب الاسم (من أ إلى ي)
+                allStudents.sort((a, b) => {
+                    const nameA = a.fullName || '';
+                    const nameB = b.fullName || '';
+                    return nameA.localeCompare(nameB, 'ar');
+                });
+
                 filterData();
             });
         }
@@ -798,9 +760,9 @@
                     <td data-label="#">${index + 1}</td>
                     <td data-label="الاسم"><strong>${student.fullName || '-'}</strong></td>
                     <td data-label="الصف"><span class="badge">${student.grade || '-'} / ${student.section || '-'}</span></td>
-                    <td>
+                    <td data-label="الإجراءات">
                         <div class="action-btns">
-                            <button class="btn-view" onclick="openDetails('${student.id}')">عرض البيانات</button>
+                            <button class="btn-view" onclick="openDetails('${student.id}')">عرض</button>
                             <button class="btn-delete" onclick="deleteStudent('${student.id}', '${student.fullName}')">حذف</button>
                         </div>
                     </td>
@@ -831,13 +793,9 @@
                 const parts = safeDate.split(/[-/]/);
                 if (parts.length === 3) {
                     if (parts[0].length === 4) {
-                        year = parts[0];
-                        month = parts[1];
-                        day = parts[2];
+                        year = parts[0]; month = parts[1]; day = parts[2];
                     } else {
-                        day = parts[0];
-                        month = parts[1];
-                        year = parts[2];
+                        day = parts[0]; month = parts[1]; year = parts[2];
                     }
                 }
             }
@@ -847,7 +805,7 @@
             return `
                 <div class="info-group ${fullClass}">
                     <div class="info-content">
-                        <div class="info-label">${label} (الكامل: ${safeDate})</div>
+                        <div class="info-label">${label} (التاريخ الكامل: ${safeDate})</div>
                         <div class="split-subfields">
                             <div class="subfield-box">
                                 <div class="subfield-info"><span>سنة:</span>${year}</div>
@@ -877,17 +835,17 @@
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
                 <div class="section-divider">البيانات الشخصية</div>
-                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
-                ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
-                ${createSplitDateGroup('تاريخ التولد', student.birthDate)}
+                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName, true)}
+                ${createInfoGroup('اسم الأم الثلاثي', student.motherName, true)}
+                ${createSplitDateGroup('تاريخ التولد', student.birthDate, true)}
                 ${createInfoGroup('الجنس', student.gender || 'ذكر')}
+                ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
 
                 <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
                 ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId)}
                 ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
-                ${createInfoGroup('مسقط الراس', student.birthPlace)}
-                ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
-                ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
+                ${createInfoGroup('مسقط الرأس', student.birthPlace)}
+                ${createInfoGroup('الديانة', student.religion || 'مسلم')}
 
                 <div class="section-divider">الحالة الاجتماعية والصحية</div>
                 ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
@@ -898,10 +856,10 @@
                 <div class="section-divider">الصف الدراسي وعنوان السكن</div>
                 ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
                 ${createInfoGroup('الشعبة', student.section)}
-                ${createInfoGroup('المحلة (م)', student.address?.mahalla || student.mahalla)}
-                ${createInfoGroup('الزقاق (ز)', student.address?.zuqaq || student.zuqaq)}
-                ${createInfoGroup('الدار (د)', student.address?.dar || student.dar)}
-                ${createInfoGroup('أقرب نقطة دالة', landmarkValue)}
+                ${createInfoGroup('المحلة (م)', student.address?.mahalla || student.mahalla || '-')}
+                ${createInfoGroup('الزقاق (ز)', student.address?.zuqaq || student.zuqaq || '-')}
+                ${createInfoGroup('الدار (د)', student.address?.dar || student.dar || '-')}
+                ${createInfoGroup('أقرب نقطة دالة', landmarkValue, true)}
                 ${createInfoGroup('رقم هاتف ولي الأمر', student.parentPhone, true)}
             `;
 
@@ -919,8 +877,8 @@
 
             currentFilteredStudents = allStudents.filter(s => {
                 const matchesSearch = (s.fullName && s.fullName.toLowerCase().includes(search)) ||
-                                    (s.motherName && s.motherName.toLowerCase().includes(search)) ||
-                                    (s.nationalId && s.nationalId.includes(search));
+                                      (s.motherName && s.motherName.toLowerCase().includes(search)) ||
+                                      (s.nationalId && s.nationalId.includes(search));
                 
                 const matchesGrade = selectedGrade === '' || s.grade === selectedGrade;
                 const matchesSection = selectedSection === '' || s.section === selectedSection;
@@ -932,7 +890,7 @@
         }
 
         function deleteStudent(id, name) {
-            if (confirm(`هل أنت تأكد من حذف بيانات الطالب: (${name})؟`)) {
+            if (confirm(`هل أنت متأكد من حذف بيانات الطالب: (${name})؟`)) {
                 database.ref('students/' + id).remove().then(() => {
                     alert('تم الحذف بنجاح.');
                 }).catch(() => {
