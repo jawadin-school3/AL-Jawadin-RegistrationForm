@@ -730,15 +730,18 @@
                 }
                 
                 // ترتيب الطلاب أبجدياً حسب الاسم (من أ إلى ي)
-                allStudents.sort((a, b) => {
-                    const nameA = a.fullName || '';
-                    const nameB = b.fullName || '';
-                    return nameA.localeCompare(nameB, 'ar');
-                });
+         // استبدل جزء دالة loadFirebaseData الذي يحتوي على الـ sort بهذا الكود:
 
-                filterData();
-            });
-        }
+allStudents.sort((a, b) => {
+    const nameA = (a.fullName || '').trim();
+    const nameB = (b.fullName || '').trim();
+    
+    // استخدام localeCompare مع ضبط الخصائص لضمان مطابقة دقيقة للحروف العربية والتشابهات
+    return nameA.localeCompare(nameB, 'ar', { 
+        numeric: true, 
+        sensitivity: 'accent' 
+    });
+});
 
         function renderTable(data) {
             const tbody = document.getElementById('studentsTableBody');
