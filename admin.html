@@ -729,19 +729,39 @@
                     }
                 }
                 
-                // ترتيب الطلاب أبجدياً حسب الاسم (من أ إلى ي)
-         // استبدل جزء دالة loadFirebaseData الذي يحتوي على الـ sort بهذا الكود:
+                // ترتيب الطلاب أبجدياً
+                allStudents.sort((a, b) => {
+                    const nameA = (a.fullName || '').trim();
+                    const nameB = (b.fullName || '').trim();
+                    return nameA.localeCompare(nameB, 'ar', { 
+                        numeric: true, 
+                        sensitivity: 'accent' 
+                    });
+                });
 
-allStudents.sort((a, b) => {
-    const nameA = (a.fullName || '').trim();
-    const nameB = (b.fullName || '').trim();
-    
-    // استخدام localeCompare مع ضبط الخصائص لضمان مطابقة دقيقة للحروف العربية والتشابهات
-    return nameA.localeCompare(nameB, 'ar', { 
-        numeric: true, 
-        sensitivity: 'accent' 
-    });
-});
+                filterData();
+            });
+        }
+
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const selectedGrade = document.getElementById('filterGrade').value;
+            const selectedSection = document.getElementById('filterSection').value;
+
+            currentFilteredStudents = allStudents.filter(student => {
+                const nameMatch = (student.fullName || '').toLowerCase().includes(searchTerm);
+                const motherMatch = (student.motherName || '').toLowerCase().includes(searchTerm);
+                const nationalIdMatch = (student.nationalId || '').toLowerCase().includes(searchTerm);
+
+                const matchesSearch = nameMatch || motherMatch || nationalIdMatch;
+                const matchesGrade = !selectedGrade || student.grade === selectedGrade;
+                const matchesSection = !selectedSection || student.section === selectedSection;
+
+                return matchesSearch && matchesGrade && matchesSection;
+            });
+
+            renderTable(currentFilteredStudents);
+        }
 
         function renderTable(data) {
             const tbody = document.getElementById('studentsTableBody');
@@ -766,7 +786,7 @@ allStudents.sort((a, b) => {
                     <td data-label="الإجراءات">
                         <div class="action-btns">
                             <button class="btn-view" onclick="openDetails('${student.id}')">عرض</button>
-                            <button class="btn-delete" onclick="deleteStudent('${student.id}', '${student.fullName}')">حذف</button>
+                            <button class="btn-delete" onclick="deleteStudent('${student.id}', '${(student.fullName || '').replace(/'/g, "\\'")}')">حذف</button>
                         </div>
                     </td>
                 `;
@@ -833,37 +853,27 @@ allStudents.sort((a, b) => {
             if (!student) return;
 
             const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
-            const ecoValue = student.economicLevel || student.economicStatus || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
-                <div class="section-divider">البيانات الشخصية</div>
+                <div class="section-divider">البيانات الشخصية والدراسية</div>
                 ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName, true)}
                 ${createInfoGroup('اسم الأم الثلاثي', student.motherName, true)}
-                ${createSplitDateGroup('تاريخ التولد', student.birthDate, true)}
-                ${createInfoGroup('الجنس', student.gender || 'ذكر')}
-                ${createInfoGroup('فصيلة الدم', student.bloodType || 'غير محدد')}
+                ${createInfoGroup('الصف والشعبة', `${student.grade || '-'} / ${student.section || '-'}`)}
+                ${createSplitDateGroup('تاريخ الميلاد', student.birthDate)}
 
-                <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
-                ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId)}
-                ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate)}
-                ${createInfoGroup('مسقط الرأس', student.birthPlace)}
-                ${createInfoGroup('الديانة', student.religion || 'مسلم')}
+                <div class="section-divider">معلومات الهوية والوثائق</div>
+                ${createInfoGroup('الرقم الوطني الموحد / رقم الهوية', student.nationalId)}
+                ${createInfoGroup('رقم قيد الشخصية', student.registryNumber)}
+                ${createInfoGroup('رقم الصحيفة', student.pageNumber)}
+                ${createInfoGroup('جهة الإصدار', student.issueAuthority)}
 
-                <div class="section-divider">الحالة الاجتماعية والصحية</div>
-                ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
-                ${createInfoGroup('لغة الدراسة', student.studyLanguage || 'العربية')}
-                ${createInfoGroup('المستوى الاقتصادي', ecoValue)}
-                ${createInfoGroup('منحة الرعاية الاجتماعية', student.socialCare || 'كلا')}
-
-                <div class="section-divider">الصف الدراسي وعنوان السكن</div>
-                ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
-                ${createInfoGroup('الشعبة', student.section)}
-                ${createInfoGroup('المحلة (م)', student.address?.mahalla || student.mahalla || '-')}
-                ${createInfoGroup('الزقاق (ز)', student.address?.zuqaq || student.zuqaq || '-')}
-                ${createInfoGroup('الدار (د)', student.address?.dar || student.dar || '-')}
+                <div class="section-divider">معلومات السكن والتواصل</div>
+                ${createInfoGroup('المحافظة / القضاء', student.city || student.governorate)}
+                ${createInfoGroup('المنطقة / الحي', student.district || student.neighborhood)}
                 ${createInfoGroup('أقرب نقطة دالة', landmarkValue, true)}
-                ${createInfoGroup('رقم هاتف ولي الأمر', student.parentPhone, true)}
+                ${createInfoGroup('رقم هاتف ولي الأمر', student.phone, true)}
+                ${createInfoGroup('ملاحظات إضافية', student.notes, true)}
             `;
 
             document.getElementById('detailsModal').style.display = 'flex';
@@ -873,31 +883,12 @@ allStudents.sort((a, b) => {
             document.getElementById('detailsModal').style.display = 'none';
         }
 
-        function filterData() {
-            const search = document.getElementById('searchInput').value.trim().toLowerCase();
-            const selectedGrade = document.getElementById('filterGrade').value;
-            const selectedSection = document.getElementById('filterSection').value;
-
-            currentFilteredStudents = allStudents.filter(s => {
-                const matchesSearch = (s.fullName && s.fullName.toLowerCase().includes(search)) ||
-                                      (s.motherName && s.motherName.toLowerCase().includes(search)) ||
-                                      (s.nationalId && s.nationalId.includes(search));
-                
-                const matchesGrade = selectedGrade === '' || s.grade === selectedGrade;
-                const matchesSection = selectedSection === '' || s.section === selectedSection;
-
-                return matchesSearch && matchesGrade && matchesSection;
-            });
-
-            renderTable(currentFilteredStudents);
-        }
-
         function deleteStudent(id, name) {
-            if (confirm(`هل أنت متأكد من حذف بيانات الطالب: (${name})؟`)) {
+            if (confirm(`هل أنت تأكد من حذف الطالب (${name}) من قاعدة البيانات؟`)) {
                 database.ref('students/' + id).remove().then(() => {
-                    alert('تم الحذف بنجاح.');
-                }).catch(() => {
-                    alert('حدث خطأ أثناء الحذف.');
+                    alert('تم حذف بيانات الطالب بنجاح.');
+                }).catch(err => {
+                    alert('حدث خطأ أثناء الحذف: ' + err.message);
                 });
             }
         }
