@@ -847,15 +847,24 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
-            // جلب القيم مع دعم كافة المفاتيح المحتملة من استمارة الإدخال
+            // قراءة المتغيرات مع فحص كافة الاحتمالات الممكنة
             const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
             const birthPlaceValue = student.birthPlace || student.birthplace || student.pob || '-';
             const phoneValue = student.phone || student.phoneNumber || student.parentPhone || student.guardianPhone || '-';
 
-            // تفكيك وقراءة مسميات العنوان المختلفة (المحلة، الزقاق، الدار)
             const mahallaVal = student.mahalla || student.mahala || student.neighborhoodNo || student.street || (student.address && student.address.mahalla) || '-';
             const zuqaqVal = student.zuqaq || student.alley || student.streetNo || (student.address && student.address.zuqaq) || '-';
             const darVal = student.dar || student.house || student.houseNo || (student.address && student.address.dar) || '-';
+
+            // جلب المستوى الاقتصادي بدون تعيين قيمة "وسطى" كإجبارية
+            const economicVal = student.economicStatus || student.economicLevel || student.financialStatus || student.incomeLevel || student.economicCondition || '-';
+            
+            // جلب باقي الحقول القابلة للاحتماء
+            const specialNeedsVal = student.specialNeeds || student.disability || student.handicap || '-';
+            const socialCareVal = student.socialCare || student.socialWelfare || student.socialSecurity || '-';
+            const studyLangVal = student.studyLanguage || student.language || '-';
+            const religionVal = student.religion || student.sect || '-';
+            const genderVal = student.gender || student.sex || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
@@ -863,20 +872,20 @@
                 ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
                 ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
                 ${createSplitDateGroup('تاريخ التولد', student.birthDate)}
-                ${createInfoGroup('الجنس', student.gender || 'ذكر')}
+                ${createInfoGroup('الجنس', genderVal)}
 
                 <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
                 ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId || student.idNumber)}
                 ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate || student.cardIssueDate)}
                 ${createInfoGroup('مسقط الرأس', birthPlaceValue)}
                 ${createInfoGroup('فصيلة الدم', student.bloodType || '-')}
-                ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
+                ${createInfoGroup('الديانة', religionVal, true)}
 
                 <div class="section-divider">الحالة الاجتماعية والصحية</div>
-                ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
-                ${createInfoGroup('لغة الدراسة', student.studyLanguage || 'العربية')}
-                ${createInfoGroup('المستوى الاقتصادي', student.economicStatus || 'وسطى')}
-                ${createInfoGroup('منحة الرعاية الاجتماعية', student.socialCare || 'كلا')}
+                ${createInfoGroup('ذوو الاحتياجات الخاصة', specialNeedsVal)}
+                ${createInfoGroup('لغة الدراسة', studyLangVal)}
+                ${createInfoGroup('المستوى الاقتصادي', economicVal)}
+                ${createInfoGroup('منحة الرعاية الاجتماعية', socialCareVal)}
 
                 <div class="section-divider">الصف الدراسي وعنوان السكن</div>
                 ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
