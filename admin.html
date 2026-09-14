@@ -790,7 +790,7 @@
         }
 
         function createInfoGroup(label, value, isFullWidth = false) {
-            const safeValue = value || '-';
+            const safeValue = (value !== undefined && value !== null && value.toString().trim() !== '') ? value : '-';
             const fullClass = isFullWidth ? 'full-width' : '';
             return `
                 <div class="info-group ${fullClass}">
@@ -847,8 +847,15 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
+            // جلب القيم مع دعم كافة المفاتيح المحتملة من استمارة الإدخال
             const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
             const birthPlaceValue = student.birthPlace || student.birthplace || student.pob || '-';
+            const phoneValue = student.phone || student.phoneNumber || student.parentPhone || student.guardianPhone || '-';
+
+            // تفكيك وقراءة مسميات العنوان المختلفة (المحلة، الزقاق، الدار)
+            const mahallaVal = student.mahalla || student.mahala || student.neighborhoodNo || student.street || (student.address && student.address.mahalla) || '-';
+            const zuqaqVal = student.zuqaq || student.alley || student.streetNo || (student.address && student.address.zuqaq) || '-';
+            const darVal = student.dar || student.house || student.houseNo || (student.address && student.address.dar) || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
@@ -874,11 +881,11 @@
                 <div class="section-divider">الصف الدراسي وعنوان السكن</div>
                 ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
                 ${createInfoGroup('الشعبة', student.section)}
-                ${createInfoGroup('المحلة (m)', student.mahalla || student.neighborhoodNo)}
-                ${createInfoGroup('الزقاق (z)', student.zuqaq || student.streetNo)}
-                ${createInfoGroup('الدار (d)', student.dar || student.houseNo)}
+                ${createInfoGroup('المحلة', mahallaVal)}
+                ${createInfoGroup('الزقاق', zuqaqVal)}
+                ${createInfoGroup('الدار', darVal)}
                 ${createInfoGroup('أقرب نقطة دالة', landmarkValue)}
-                ${createInfoGroup('رقم هاتف ولي الأمر', student.phone || student.phoneNumber, true)}
+                ${createInfoGroup('رقم هاتف ولي الأمر', phoneValue, true)}
             `;
 
             document.getElementById('detailsModal').style.display = 'flex';
