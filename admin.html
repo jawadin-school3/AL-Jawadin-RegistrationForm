@@ -304,7 +304,6 @@
         }
         .btn-delete:hover { background: #fecaca; }
 
-        /* زر العودة للأعلى */
         .scrollTopBtn {
             position: fixed;
             bottom: 25px;
@@ -343,7 +342,7 @@
             .action-btns { width: 100%; margin-top: 8px; }
         }
 
-        /* النافذة المنبثقة للتفاصيل */
+        /* النافذة المنبثقة للتفاصيل الكاملة */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -362,7 +361,7 @@
         .modal-card {
             background: #fff;
             width: 100%;
-            max-width: 650px;
+            max-width: 750px;
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -381,7 +380,7 @@
             flex-shrink: 0;
         }
 
-        .modal-header h3 { font-size: 15px; }
+        .modal-header h3 { font-size: 16px; font-weight: 800; }
 
         .modal-header-actions {
             display: flex;
@@ -393,10 +392,10 @@
             background: rgba(255,255,255,0.2);
             color: white;
             border: 1px solid rgba(255,255,255,0.4);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
         }
 
@@ -428,6 +427,7 @@
             padding-bottom: 4px;
             margin-top: 10px;
             margin-bottom: 4px;
+            text-align: right;
         }
 
         .info-group {
@@ -473,7 +473,7 @@
             background: #fff;
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 4px 8px;
+            padding: 4px 6px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -520,11 +520,11 @@
         }
         .btn-copy:hover { background: var(--primary); color: white; }
 
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
             .modal-body { grid-template-columns: 1fr !important; }
             .section-divider { grid-column: span 1 !important; }
             .info-group.full-width { grid-column: span 1 !important; }
-            .split-subfields { flex-direction: column; gap: 6px; }
+            .split-subfields { flex-direction: row; flex-wrap: wrap; }
         }
 
         @media print {
@@ -630,9 +630,9 @@
     <div class="modal-overlay" id="detailsModal">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>استمارة بيانات الطالب</h3>
+                <h3>استمارة بيانات الطالب الكاملة</h3>
                 <div class="modal-header-actions">
-                    <button class="btn-print" onclick="window.print()">طباعة الاستمارة</button>
+                    <button class="btn-print" onclick="window.print()">طباعة</button>
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
             </div>
@@ -729,7 +729,6 @@
                     }
                 }
                 
-                // ترتيب الطلاب أبجدياً
                 allStudents.sort((a, b) => {
                     const nameA = (a.fullName || '').trim();
                     const nameB = (b.fullName || '').trim();
@@ -752,8 +751,9 @@
                 const nameMatch = (student.fullName || '').toLowerCase().includes(searchTerm);
                 const motherMatch = (student.motherName || '').toLowerCase().includes(searchTerm);
                 const nationalIdMatch = (student.nationalId || '').toLowerCase().includes(searchTerm);
+                const phoneMatch = (student.phone || student.phoneNumber || '').toLowerCase().includes(searchTerm);
 
-                const matchesSearch = nameMatch || motherMatch || nationalIdMatch;
+                const matchesSearch = nameMatch || motherMatch || nationalIdMatch || phoneMatch;
                 const matchesGrade = !selectedGrade || student.grade === selectedGrade;
                 const matchesSection = !selectedSection || student.section === selectedSection;
 
@@ -766,11 +766,6 @@
         function renderTable(data) {
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
-
-            if (allStudents.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد أي بيانات مسجلة في النظام حتى الآن.</td></tr>';
-                return;
-            }
 
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد بيانات مطابقة للبحث.</td></tr>';
@@ -828,7 +823,7 @@
             return `
                 <div class="info-group ${fullClass}">
                     <div class="info-content">
-                        <div class="info-label">${label} (التاريخ الكامل: ${safeDate})</div>
+                        <div class="info-label">${label} (الكامل: ${safeDate})</div>
                         <div class="split-subfields">
                             <div class="subfield-box">
                                 <div class="subfield-info"><span>سنة:</span>${year}</div>
@@ -853,27 +848,37 @@
             if (!student) return;
 
             const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
+            const birthPlaceValue = student.birthPlace || student.birthplace || student.pob || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
-                <div class="section-divider">البيانات الشخصية والدراسية</div>
-                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName, true)}
-                ${createInfoGroup('اسم الأم الثلاثي', student.motherName, true)}
-                ${createInfoGroup('الصف والشعبة', `${student.grade || '-'} / ${student.section || '-'}`)}
-                ${createSplitDateGroup('تاريخ الميلاد', student.birthDate)}
+                <div class="section-divider">البيانات الشخصية</div>
+                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName)}
+                ${createInfoGroup('اسم الأم الثلاثي', student.motherName)}
+                ${createSplitDateGroup('تاريخ التولد', student.birthDate)}
+                ${createInfoGroup('الجنس', student.gender || 'ذكر')}
 
-                <div class="section-divider">معلومات الهوية والوثائق</div>
-                ${createInfoGroup('الرقم الوطني الموحد / رقم الهوية', student.nationalId)}
-                ${createInfoGroup('رقم قيد الشخصية', student.registryNumber)}
-                ${createInfoGroup('رقم الصحيفة', student.pageNumber)}
-                ${createInfoGroup('جهة الإصدار', student.issueAuthority)}
+                <div class="section-divider">معلومات البطاقة الموحدة والجنسية</div>
+                ${createInfoGroup('رقم البطاقة الموحدة', student.nationalId || student.idNumber)}
+                ${createSplitDateGroup('تاريخ إصدار البطاقة الموحدة', student.issueDate || student.cardIssueDate)}
+                ${createInfoGroup('مسقط الرأس', birthPlaceValue)}
+                ${createInfoGroup('فصيلة الدم', student.bloodType || '-')}
+                ${createInfoGroup('الديانة', student.religion || 'مسلم', true)}
 
-                <div class="section-divider">معلومات السكن والتواصل</div>
-                ${createInfoGroup('المحافظة / القضاء', student.city || student.governorate)}
-                ${createInfoGroup('المنطقة / الحي', student.district || student.neighborhood)}
-                ${createInfoGroup('أقرب نقطة دالة', landmarkValue, true)}
-                ${createInfoGroup('رقم هاتف ولي الأمر', student.phone, true)}
-                ${createInfoGroup('ملاحظات إضافية', student.notes, true)}
+                <div class="section-divider">الحالة الاجتماعية والصحية</div>
+                ${createInfoGroup('ذوو الاحتياجات الخاصة', student.specialNeeds || 'كلا')}
+                ${createInfoGroup('لغة الدراسة', student.studyLanguage || 'العربية')}
+                ${createInfoGroup('المستوى الاقتصادي', student.economicStatus || 'وسطى')}
+                ${createInfoGroup('منحة الرعاية الاجتماعية', student.socialCare || 'كلا')}
+
+                <div class="section-divider">الصف الدراسي وعنوان السكن</div>
+                ${createInfoGroup('الصف الدراسي الحالي', student.grade)}
+                ${createInfoGroup('الشعبة', student.section)}
+                ${createInfoGroup('المحلة (m)', student.mahalla || student.neighborhoodNo)}
+                ${createInfoGroup('الزقاق (z)', student.zuqaq || student.streetNo)}
+                ${createInfoGroup('الدار (d)', student.dar || student.houseNo)}
+                ${createInfoGroup('أقرب نقطة دالة', landmarkValue)}
+                ${createInfoGroup('رقم هاتف ولي الأمر', student.phone || student.phoneNumber, true)}
             `;
 
             document.getElementById('detailsModal').style.display = 'flex';
