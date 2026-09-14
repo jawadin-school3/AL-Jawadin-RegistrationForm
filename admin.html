@@ -304,7 +304,6 @@
         }
         .btn-delete:hover { background: #fecaca; }
 
-        /* زر العودة للأعلى */
         .scrollTopBtn {
             position: fixed;
             bottom: 25px;
@@ -463,48 +462,6 @@
             word-break: break-word;
         }
 
-        .split-subfields {
-            display: flex;
-            gap: 6px;
-            margin-top: 4px;
-        }
-
-        .subfield-box {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 4px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex: 1;
-        }
-
-        .subfield-info {
-            font-size: 11px;
-            color: var(--text-main);
-            font-weight: 700;
-        }
-
-        .subfield-info span {
-            color: var(--text-muted);
-            font-size: 10px;
-            margin-left: 4px;
-        }
-
-        .btn-copy-sub {
-            background: #e2e8f0;
-            color: var(--primary-dark);
-            border: none;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 10px;
-            font-weight: 700;
-            transition: 0.2s;
-        }
-        .btn-copy-sub:hover { background: var(--primary); color: white; }
-
         .btn-copy {
             background: #e2e8f0;
             color: var(--primary-dark);
@@ -524,7 +481,6 @@
             .modal-body { grid-template-columns: 1fr !important; }
             .section-divider { grid-column: span 1 !important; }
             .info-group.full-width { grid-column: span 1 !important; }
-            .split-subfields { flex-direction: column; gap: 6px; }
         }
 
         @media print {
@@ -550,7 +506,7 @@
                 overflow: visible !important;
             }
             .modal-body { overflow: visible !important; max-height: none !important; padding: 10px !important; }
-            .btn-copy, .btn-copy-sub, .close-btn, .btn-print, .modal-header { display: none !important; }
+            .btn-copy, .close-btn, .btn-print, .modal-header { display: none !important; }
         }
     </style>
 </head>
@@ -752,8 +708,9 @@
                 const nameMatch = (student.fullName || '').toLowerCase().includes(searchTerm);
                 const motherMatch = (student.motherName || '').toLowerCase().includes(searchTerm);
                 const nationalIdMatch = (student.nationalId || '').toLowerCase().includes(searchTerm);
+                const phoneMatch = (student.phone || student.phoneNumber || '').toLowerCase().includes(searchTerm);
 
-                const matchesSearch = nameMatch || motherMatch || nationalIdMatch;
+                const matchesSearch = nameMatch || motherMatch || nationalIdMatch || phoneMatch;
                 const matchesGrade = !selectedGrade || student.grade === selectedGrade;
                 const matchesSection = !selectedSection || student.section === selectedSection;
 
@@ -763,117 +720,102 @@
             renderTable(currentFilteredStudents);
         }
 
-        function renderTable(data) {
+        function renderTable(students) {
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
-            if (allStudents.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد أي بيانات مسجلة في النظام حتى الآن.</td></tr>';
+            if (students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد نتائج مطابقة...</td></tr>`;
                 return;
             }
 
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">لا توجد بيانات مطابقة للبحث.</td></tr>';
-                return;
-            }
-
-            data.forEach((student, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+            students.forEach((student, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
                     <td data-label="#">${index + 1}</td>
-                    <td data-label="الاسم"><strong>${student.fullName || '-'}</strong></td>
-                    <td data-label="الصف"><span class="badge">${student.grade || '-'} / ${student.section || '-'}</span></td>
+                    <td data-label="اسم الطالب">${student.fullName || '-'}</td>
+                    <td data-label="الصف والشعبة"><span class="badge">${student.grade || '-'} - ${student.section || '-'}</span></td>
                     <td data-label="الإجراءات">
                         <div class="action-btns">
-                            <button class="btn-view" onclick="openDetails('${student.id}')">عرض</button>
-                            <button class="btn-delete" onclick="deleteStudent('${student.id}', '${(student.fullName || '').replace(/'/g, "\\'")}')">حذف</button>
+                            <button class="btn-view" onclick="showDetails('${student.id}')">عرض البيانات</button>
+                            <button class="btn-delete" onclick="deleteStudent('${student.id}', '${student.fullName || ''}')">حذف</button>
                         </div>
                     </td>
                 `;
-                tbody.appendChild(row);
+                tbody.appendChild(tr);
             });
         }
 
-        function createInfoGroup(label, value, isFullWidth = false) {
-            const safeValue = value || '-';
-            const fullClass = isFullWidth ? 'full-width' : '';
-            return `
-                <div class="info-group ${fullClass}">
-                    <div class="info-content">
-                        <div class="info-label">${label}</div>
-                        <div class="info-value">${safeValue}</div>
-                    </div>
-                    <button class="btn-copy" onclick="copyToClipboard('${safeValue.toString().replace(/'/g, "\\'")}', this)">نسخ</button>
-                </div>
-            `;
-        }
-
-        function createSplitDateGroup(label, dateStr, isFullWidth = false) {
-            const safeDate = dateStr || '-';
-            let year = '-', month = '-', day = '-';
-            
-            if (safeDate !== '-') {
-                const parts = safeDate.split(/[-/]/);
-                if (parts.length === 3) {
-                    if (parts[0].length === 4) {
-                        year = parts[0]; month = parts[1]; day = parts[2];
-                    } else {
-                        day = parts[0]; month = parts[1]; year = parts[2];
-                    }
-                }
-            }
-
-            const fullClass = isFullWidth ? 'full-width' : '';
-
-            return `
-                <div class="info-group ${fullClass}">
-                    <div class="info-content">
-                        <div class="info-label">${label} (التاريخ الكامل: ${safeDate})</div>
-                        <div class="split-subfields">
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>سنة:</span>${year}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${year}', this)">نسخ</button>
-                            </div>
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>شهر:</span>${month}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${month}', this)">نسخ</button>
-                            </div>
-                            <div class="subfield-box">
-                                <div class="subfield-info"><span>يوم:</span>${day}</div>
-                                <button class="btn-copy-sub" onclick="copyToClipboard('${day}', this)">نسخ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openDetails(id) {
+        function showDetails(id) {
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
 
-            const landmarkValue = student.nearestPoint || student.nearestLandmark || student.landmark || (student.address && student.address.nearestPoint) || '-';
+            // التأكد من دعم مسميات المفاتيح المختلفة لرقم الهاتف والنقطة الدالة
+            const phone = student.phone || student.phoneNumber || student.mobile || '-';
+            const landmark = student.landmark || student.nearestLandmark || student.address || '-';
+            const nationalId = student.nationalId || student.idNumber || '-';
+            const motherName = student.motherName || '-';
+            const birthDate = student.birthDate || student.dob || '-';
 
             const modalContent = document.getElementById('modalContent');
             modalContent.innerHTML = `
-                <div class="section-divider">البيانات الشخصية والدراسية</div>
-                ${createInfoGroup('اسم الطالب الرباعي واللقب', student.fullName, true)}
-                ${createInfoGroup('اسم الأم الثلاثي', student.motherName, true)}
-                ${createInfoGroup('الصف والشعبة', `${student.grade || '-'} / ${student.section || '-'}`)}
-                ${createSplitDateGroup('تاريخ الميلاد', student.birthDate)}
+                <div class="section-divider">البيانات الشخصية</div>
+                
+                <div class="info-group full-width">
+                    <div class="info-content">
+                        <div class="info-label">اسم الطالب الرباعي واللقب</div>
+                        <div class="info-value">${student.fullName || '-'}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${student.fullName || ''}', this)">نسخ</button>
+                </div>
 
-                <div class="section-divider">معلومات الهوية والوثائق</div>
-                ${createInfoGroup('الرقم الوطني الموحد / رقم الهوية', student.nationalId)}
-                ${createInfoGroup('رقم قيد الشخصية', student.registryNumber)}
-                ${createInfoGroup('رقم الصحيفة', student.pageNumber)}
-                ${createInfoGroup('جهة الإصدار', student.issueAuthority)}
+                <div class="info-group">
+                    <div class="info-content">
+                        <div class="info-label">الصف والشعبة</div>
+                        <div class="info-value">${student.grade || '-'} - ${student.section || '-'}</div>
+                    </div>
+                </div>
 
-                <div class="section-divider">معلومات السكن والتواصل</div>
-                ${createInfoGroup('المحافظة / القضاء', student.city || student.governorate)}
-                ${createInfoGroup('المنطقة / الحي', student.district || student.neighborhood)}
-                ${createInfoGroup('أقرب نقطة دالة', landmarkValue, true)}
-                ${createInfoGroup('رقم هاتف ولي الأمر', student.phone, true)}
-                ${createInfoGroup('ملاحظات إضافية', student.notes, true)}
+                <div class="info-group">
+                    <div class="info-content">
+                        <div class="info-label">تاريخ الميلاد</div>
+                        <div class="info-value">${birthDate}</div>
+                    </div>
+                </div>
+
+                <div class="info-group full-width">
+                    <div class="info-content">
+                        <div class="info-label">اسم الأم الثلاثي</div>
+                        <div class="info-value">${motherName}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${motherName}', this)">نسخ</button>
+                </div>
+
+                <div class="info-group full-width">
+                    <div class="info-content">
+                        <div class="info-label">الرقم الوطني / الموحد</div>
+                        <div class="info-value">${nationalId}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${nationalId}', this)">نسخ</button>
+                </div>
+
+                <div class="section-divider">معلومات الاتصال والسكن</div>
+
+                <div class="info-group full-width">
+                    <div class="info-content">
+                        <div class="info-label">رقم هاتف ولي الأمر</div>
+                        <div class="info-value">${phone}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${phone}', this)">نسخ</button>
+                </div>
+
+                <div class="info-group full-width">
+                    <div class="info-content">
+                        <div class="info-label">أقرب نقطة دالة</div>
+                        <div class="info-value">${landmark}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${landmark}', this)">نسخ</button>
+                </div>
             `;
 
             document.getElementById('detailsModal').style.display = 'flex';
@@ -884,9 +826,9 @@
         }
 
         function deleteStudent(id, name) {
-            if (confirm(`هل أنت تأكد من حذف الطالب (${name}) من قاعدة البيانات؟`)) {
+            if (confirm(`هل أنت تأكد من حذف الطالب (${name}) نهائياً؟`)) {
                 database.ref('students/' + id).remove().then(() => {
-                    alert('تم حذف بيانات الطالب بنجاح.');
+                    alert('تم حذف الطالب بنجاح');
                 }).catch(err => {
                     alert('حدث خطأ أثناء الحذف: ' + err.message);
                 });
